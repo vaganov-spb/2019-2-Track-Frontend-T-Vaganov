@@ -28,14 +28,8 @@ test('returns non unique elements №7', () => {
   expect(nonUniqueElements([1, {name :  'John'}, 3, '1', 3, true])).toEqual([3, 3]);
 })
 
-//test('returns non unique elements №9', () => {
-  //expect(nonUniqueElements([1, {name :  'John'}, 3, '1', 3, true, true, {name :  'John' }])).toEqual([Object { name: "John" }, 3, 3, true, true, Object { name: "John" }, Array [1,2,3]]);
-//})
-
 test('returns non unique elements №8', () => {
   expect(nonUniqueElements([1, 3, '1', true, true, [1, 2, 3]])).toEqual([true, true]);
 })
 
-//test('returns non unique elements №10', () => {
-  //expect(nonUniqueElements([1, 3, '1', true, true, [1, 2, 3], [1, 2, 3]])).toEqual([true, true, [1, 2, 3], [1, 2, 3]]);
-//})
+
