@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "eslint ./src --fix",
+    "test": "CI=true eslint ./src --fix",
     "start": "webpack-dev-server --mode=development --hot",
     "build": "webpack --mode=development"
   },
