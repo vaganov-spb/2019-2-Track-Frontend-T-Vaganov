@@ -148,3 +148,4 @@ jest_*/
 
 
 build/
+./web-components/build/
