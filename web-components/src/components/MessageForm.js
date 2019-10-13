@@ -20,9 +20,9 @@ template.innerHTML = `
 
         .message {
             font-size:13px;
-            border: 1px solid #DDA0DD;
-            border-radius:7px; 
-            background-color:#DDA0DD;
+            border: 1px solid #dfbddf;
+            border-radius:4px; 
+            background-color:#f3cef7;
             width: auto;
             max-width:60%;
             min-width:30%;
@@ -30,7 +30,8 @@ template.innerHTML = `
             display: flex;
             flex-direction:column;
             align-items: flex-end;
-            padding: 0px 3px 0 3px;
+            padding:5px 12px 3px 8px;
+            box-shadow: 0 1px 1px #dfbddf;
             flex: none;
         }
         
@@ -57,6 +58,15 @@ template.innerHTML = `
 
         .text {
             width:100%;
+            font-size:15px;
+            color:#201e20;
+        }
+      
+        .right_text {
+          color:#696969;
+          font-size:12px;
+          line-height:12px;
+          margin-top:5px;
         }
 
     </style>
@@ -83,17 +93,14 @@ class MessageForm extends HTMLElement {
     this.$img = this._shadowRoot.querySelector('img');
     this.$form.addEventListener('submit', this._onSubmit.bind(this));
     this.$img.addEventListener('click', this._onClick.bind(this));
+    this.$form.addEventListener('keypress', this._onKeyPress.bind(this));
     this._loadFromLS();
   }
 
 
   _loadFromLS() {
-    for (let i = 1; i < localStorage.length; i += 1) {
-      this.$local.push(JSON.parse(localStorage.getItem(`${i}`)));
-    }
-
-    this.$local.forEach((item) => {
-      this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${item[0]}</div> <div class="text_ms">${item[1]}:${item[2]} ${item[3]}-${item[4]}-${item[5]}</div> <div class="text_ms">from Bobby</div></div>`);
+    JSON.parse(localStorage.getItem('1')).forEach((item) => {
+      this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${item[0]}</div> <div class="text_ms right_text">${item[1]}:${item[2]} </div> </div>`);
     });
   }
 
@@ -112,13 +119,10 @@ class MessageForm extends HTMLElement {
       if (now.getHours() < 10) {
         hours = `0${now.getHours()}`;
       }
-      this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${mes}</div> <div class="text_ms">${hours}:${minutes} ${now.getDate()}-${now.getMonth()}-${now.getFullYear()}</div> <div class="text_ms">from Bobby</div></div>`);
-
-      const month = now.getMonth();
-      const date = now.getDate();
-      const year = now.getFullYear();
-      const newRecord = JSON.stringify([mes, hours, minutes, date, month, year]);
-      localStorage.setItem(`${localStorage.length}`, newRecord);
+      this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${mes}</div> <div class="text_ms right_text">${hours}:${minutes} </div></div>`);
+      const mesR = JSON.parse(localStorage.getItem('1'));
+      mesR.push([mes, hours, minutes]);
+      localStorage.setItem('1', JSON.stringify(mesR));
 
       this.$input.value = '';
     }
@@ -128,6 +132,13 @@ class MessageForm extends HTMLElement {
     event.preventDefault();
     this.$form.dispatchEvent(new Event('submit'));
   }
+
+  _onKeyPress(event) {
+    if (event.keyCode === 13) {
+      this.$form.dispatchEvent(new Event('submit'));
+    }
+  }
 }
+
 
 customElements.define('message-form', MessageForm);
