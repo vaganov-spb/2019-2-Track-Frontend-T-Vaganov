@@ -19,10 +19,11 @@ template.innerHTML = `
   
   .message-header-img {
     
-    width:12%;
-    margin-left:4%;
+    width:13%;
+    margin-left:3%;
     height:90%;
     margin-bottom: 1%;
+    margin-right:3%;
   }
   
   img {
@@ -32,14 +33,17 @@ template.innerHTML = `
     float: left;
   }
   
-  .Username {
-    width: 30%;
+  .username {
+    width: auto;
+    min-width:40%;
     margin-left: 50%;
-    height: 35%;
+    padding-top:1%;
+    height: 80%;
     color:white;
-    margin-left: 6%;
-    margin-bottom: 4%;
+    margin-left: 1%;
+    margin-bottom: 0%;
     font-size: 18px;
+    
   }
   
   .online {
@@ -47,7 +51,7 @@ template.innerHTML = `
     margin-bottom: 0%;
     height: 10px;
     color:rgb(180, 177, 177);
-    margin-top: 3%;
+    margin-top: 1%;
   }
   
   .search_icons {
@@ -58,7 +62,6 @@ template.innerHTML = `
     flex-direction: row;
     justify-content: space-around;
     margin-bottom: 4%;
-    margin-left: 3%;
     cursor: pointer;
   }
   
@@ -77,6 +80,10 @@ template.innerHTML = `
     flex-direction: row;
     width: 100%;
     justify-content: space-around;
+  }
+  
+  .user {
+    letter-spacing:normal;
   }
   
   .top {
@@ -106,11 +113,12 @@ template.innerHTML = `
             </span>
         </div>
         <div class="message-header-img">
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Emoji_u1f4a9.svg/1024px-Emoji_u1f4a9.svg.png'>
+            <img>
         </div>
 
-        <div class="Username">Дженнифер 
-            <p class="online">была в сети 2 часа назад</p>
+        <div class="username">
+            <span class="user"></span>
+            <p class="online">в сети 2 часа назад</p>
         </div>
         <div class="search_icons">
             <span style="font-size: 22px; color: white;">
@@ -128,8 +136,33 @@ template.innerHTML = `
 class Chats extends HTMLElement {
   constructor() {
     super();
+    this._chatId = -1;
     this._shadowRoot = this.attachShadow({ mode: 'open' });
     this._shadowRoot.appendChild(template.content.cloneNode(true));
+    this.$chat = this.shadowRoot.querySelector('message-form');
+    this.$user = this.shadowRoot.querySelector('.user');
+    this.$return = this.shadowRoot.querySelector('.fa-arrow-left');
+    this.$return.addEventListener('click', this._onClickReturn.bind(this));
+    this.$container = document.getElementById('container');
+    this.$img = this.shadowRoot.querySelector('img');
+  }
+
+  static get observedAttributes() {
+    return ['chat-id'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'chat-id') {
+      this._chatId = newValue;
+      this.$chat.setAttribute(name, newValue);
+      this.$user.innerText = JSON.parse(localStorage.getItem(`${newValue}`)).name;
+      this.$img.src = JSON.parse(localStorage.getItem(`${newValue}`)).url;
+    }
+  }
+
+  _onClickReturn(event) {
+    event.preventDefault();
+    this.$container.innerHTML = '<chat-list></chat-list>';
   }
 }
 

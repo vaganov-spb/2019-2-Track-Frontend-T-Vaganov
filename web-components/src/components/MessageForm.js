@@ -84,7 +84,7 @@ template.innerHTML = `
 class MessageForm extends HTMLElement {
   constructor() {
     super();
-    this.$local = [];
+    this._chatId = -1;
     this._shadowRoot = this.attachShadow({ mode: 'open' });
     this._shadowRoot.appendChild(template.content.cloneNode(true));
     this.$form = this._shadowRoot.querySelector('form');
@@ -99,9 +99,13 @@ class MessageForm extends HTMLElement {
 
 
   _loadFromLS() {
-    JSON.parse(localStorage.getItem('1')).forEach((item) => {
-      this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${item[0]}</div> <div class="text_ms right_text">${item[1]}:${item[2]} </div> </div>`);
-    });
+    if (this._chatId !== -1) {
+      this.$message.innerHTML = '';
+      JSON.parse(localStorage.getItem(`${this._chatId}`)).mes.forEach((item) => {
+        this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${item[0]}</div> <div class="text_ms right_text">${item[1]}:${item[2]} </div> </div>`);
+        this.$message.scrollTop = this.$message.scrollHeight;
+      });
+    }
   }
 
   _onSubmit(event) {
@@ -120,11 +124,13 @@ class MessageForm extends HTMLElement {
         hours = `0${now.getHours()}`;
       }
       this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${mes}</div> <div class="text_ms right_text">${hours}:${minutes} </div></div>`);
-      const mesR = JSON.parse(localStorage.getItem('1'));
-      mesR.push([mes, hours, minutes]);
-      localStorage.setItem('1', JSON.stringify(mesR));
+      const mesR = JSON.parse(localStorage.getItem(`${this._chatId}`));
+      mesR.mes.push([mes, hours, minutes]);
+
+      localStorage.setItem(`${this._chatId}`, JSON.stringify(mesR));
 
       this.$input.value = '';
+      this.$message.scrollTop = this.$message.scrollHeight;
     }
   }
 
@@ -136,6 +142,17 @@ class MessageForm extends HTMLElement {
   _onKeyPress(event) {
     if (event.keyCode === 13) {
       this.$form.dispatchEvent(new Event('submit'));
+    }
+  }
+
+  static get observedAttributes() {
+    return ['chat-id'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'chat-id') {
+      this._chatId = newValue;
+      this._loadFromLS();
     }
   }
 }
