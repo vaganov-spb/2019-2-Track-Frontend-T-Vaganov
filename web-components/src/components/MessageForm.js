@@ -17,29 +17,7 @@ template.innerHTML = `
             align-items: flex-end;
             overflow:scroll;  
         }
-
-        .message {
-            font-size:13px;
-            border: 1px solid #dfbddf;
-            border-radius:4px; 
-            background-color:#f3cef7;
-            width: auto;
-            max-width:60%;
-            min-width:30%;
-            margin: 0 2px 4px 0;
-            display: flex;
-            flex-direction:column;
-            align-items: flex-end;
-            padding:5px 12px 3px 8px;
-            box-shadow: 0 1px 1px #dfbddf;
-            flex: none;
-        }
         
-        .text_ms {
-            line-height:18px;
-            word-wrap:break-word;
-        }
-
         input[type=submit] {
             visibility: collapse;
         }
@@ -54,19 +32,6 @@ template.innerHTML = `
         img {
              width:10%;
              height:90%;
-        }
-
-        .text {
-            width:100%;
-            font-size:15px;
-            color:#201e20;
-        }
-      
-        .right_text {
-          color:#696969;
-          font-size:12px;
-          line-height:12px;
-          margin-top:5px;
         }
 
     </style>
@@ -102,7 +67,7 @@ class MessageForm extends HTMLElement {
     if (this._chatId !== -1) {
       this.$message.innerHTML = '';
       JSON.parse(localStorage.getItem(`${this._chatId}`)).mes.forEach((item) => {
-        this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${item[0]}</div> <div class="text_ms right_text">${item[1]}:${item[2]} </div> </div>`);
+        this.$message.insertAdjacentHTML('beforeend', `<mess-rule message="${item[0]}" time="${item[1]}:${item[2]}"></mess-rule>`);
         this.$message.scrollTop = this.$message.scrollHeight;
       });
     }
@@ -115,6 +80,10 @@ class MessageForm extends HTMLElement {
     const now = new Date();
 
     if (mes !== '') {
+      const flag = JSON.parse(localStorage.getItem(`${this._chatId}`));
+      flag.flag = false;
+      localStorage.setItem(`${this._chatId}`, JSON.stringify(flag));
+
       let minutes = now.getMinutes();
       let hours = now.getHours();
       if (Number(now.getMinutes()) < 10) {
@@ -123,7 +92,9 @@ class MessageForm extends HTMLElement {
       if (now.getHours() < 10) {
         hours = `0${now.getHours()}`;
       }
-      this.$message.insertAdjacentHTML('beforeend', `<div class="message"><div class="text_ms text">${mes}</div> <div class="text_ms right_text">${hours}:${minutes} </div></div>`);
+
+      this.$message.insertAdjacentHTML('beforeend', `<mess-rule message="${mes}" time="${hours}:${minutes}"></mess-rule>`);
+
       const mesR = JSON.parse(localStorage.getItem(`${this._chatId}`));
       mesR.mes.push([mes, hours, minutes]);
 

@@ -17,8 +17,7 @@ template.innerHTML = `
     line-height: 90%;
   }
   
-  .message-header-img {
-    
+  .message-header-img { 
     width:13%;
     margin-left:3%;
     height:90%;
@@ -42,8 +41,7 @@ template.innerHTML = `
     color:white;
     margin-left: 1%;
     margin-bottom: 0%;
-    font-size: 18px;
-    
+    font-size: 18px;  
   }
   
   .online {
@@ -51,7 +49,7 @@ template.innerHTML = `
     margin-bottom: 0%;
     height: 10px;
     color:rgb(180, 177, 177);
-    margin-top: 1%;
+    margin-top: 3%;
   }
   
   .search_icons {
@@ -76,6 +74,7 @@ template.innerHTML = `
   }
   
   .top_icons {
+    margin-top:2px;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -95,6 +94,7 @@ template.innerHTML = `
   }
 
 </style>
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 

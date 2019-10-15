@@ -4,10 +4,10 @@ template.innerHTML = `
         input {
             border: 0;
             outline: none;
-            width: calc(100% - 2px);
+            width: 95%;
             height:38px;
             font-size:18px;
-            padding:0 0 0 10px;
+            padding:0 0 0 5%;
         }
 
         :host {

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const template = document.createElement('template');
 template.innerHTML = `
 <style>
@@ -11,7 +12,6 @@ template.innerHTML = `
 .foto {
   height:100%;
   width:12%;
-  
   border-radius:50%;
 }
 
@@ -24,7 +24,7 @@ img {
 .pers-info {
   height:100%;
   width:88%;
-  border: 1px solid grey;
+  border: 1px solid #DCDCDC;
   border-top:none;
   border-left:none;
   border-right:none;
@@ -34,8 +34,7 @@ img {
  
 .user-info {
   height:100%;
-  width:85%;
-  
+  width:80%;
   padding-left:4%;
   padding-bottom:2%;
   padding-top:1%;
@@ -47,20 +46,22 @@ img {
 
 .usr_name {
   letter-spacing:0.03em;
+  max-width:100%;
 }
 
 .last-ms {
   font-size:13px;
   color:grey;
-  letter-spacing:0.03em;
+  max-width:100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .time-check {
   height:100%;
   width:15%;
   display:flex;
-  flex-direction:column;
-  
+  flex-direction:column; 
 }
 
 .Time {
@@ -75,7 +76,7 @@ img {
 }
 
 .indicate {
-  widows: 100%;
+  width: 100%;
   height:100%;
   align:center;
 }
@@ -105,7 +106,7 @@ img {
             <span class="usr_name"></span>
         </div>
         <div class="last-mes">
-            <span class="last-ms"></span>
+            <div class="last-ms"></div>
         </div>
     </div>
     <div class="time-check">
@@ -114,7 +115,7 @@ img {
         </div>  
         <div class="indicate">
             <div class="indicate-img">
-                <img class="indicator" src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png'>
+                <img class="indicator">
             </div>
         </div>
     </div>
@@ -132,6 +133,7 @@ class ChatPreview extends HTMLElement {
     this.$name = this._shadowRoot.querySelector('.usr_name');
     this.$photo = this._shadowRoot.querySelector('.user_foto');
     this.$lastmes = this._shadowRoot.querySelector('.last-ms');
+    this.$indicator = this._shadowRoot.querySelector('.indicator');
     this.$time = this._shadowRoot.querySelector('.time');
     this.$container = document.getElementById('container');
     this.$root.addEventListener('click', this._onClick.bind(this));
@@ -139,6 +141,11 @@ class ChatPreview extends HTMLElement {
 
   _onClick(event) {
     event.preventDefault();
+
+    const flag = JSON.parse(localStorage.getItem(`${this._chatId}`));
+    flag.flag = true;
+    localStorage.setItem(`${this._chatId}`, JSON.stringify(flag));
+
     this.$container.innerHTML = `<chat-form chat-id="${this._chatId}"></chat-form>`;
   }
 
@@ -151,16 +158,21 @@ class ChatPreview extends HTMLElement {
       this._chatId = newValue;
       this.$name.innerText = JSON.parse(localStorage.getItem(`${newValue}`)).name;
       // eslint-disable-next-line prefer-destructuring
-      let text = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][0];
+
+      const text = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][0];
       const hours = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][1];
       const minutes = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][2];
       this.$time.innerText = `${hours}:${minutes}`;
+
       this.$photo.setAttribute('src', JSON.parse(localStorage.getItem(`${newValue}`)).url);
-      if (text.length > 30) {
-        text = `${text.slice(0, 29)}...`;
-        this.$lastmes.innerText = text;
+
+      this.$lastmes.innerText = text;
+
+      const flag = JSON.parse(localStorage.getItem(`${this._chatId}`)).flag;
+      if (flag !== true) {
+        this.$indicator.setAttribute('src', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png');
       } else {
-        this.$lastmes.innerText = text;
+        this.$indicator.setAttribute('src', 'https://cdn.iconscout.com/icon/premium/png-512-thumb/double-tick-2-571364.png');
       }
     }
   }
