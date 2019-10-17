@@ -149,13 +149,15 @@ class Chats extends HTMLElement {
 
 
   _loadInfo() {
-    if (localStorage.getItem(`${this._chatId}`) === null) {
-      localStorage.setItem(`${this._chatId}`, JSON.stringify({
-        name: 'Jennyfer Eshley',
-        flag: true,
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Emoji_u1f608.svg/1024px-Emoji_u1f608.svg.png',
-        mes: [['qwerr', 10, 22], ['drcfrckfmfvkm', 22, 43]],
-      }));
+    if (this._chatId !== -1) {
+      if (localStorage.getItem(`${this._chatId}`) === null) {
+        localStorage.setItem(`${this._chatId}`, JSON.stringify({
+          name: 'Jennyfer Eshley',
+          flag: true,
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Emoji_u1f608.svg/1024px-Emoji_u1f608.svg.png',
+          mes: [['qwerr', 10, 22], ['drcfrckfmfvkm', 22, 43]],
+        }));
+      }
     }
   }
 
