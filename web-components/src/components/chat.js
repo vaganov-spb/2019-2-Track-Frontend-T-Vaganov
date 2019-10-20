@@ -19,15 +19,14 @@ template.innerHTML = `
   
   .message-header-img { 
     width:13%;
-    margin-left:3%;
+    margin-left:5%;
     height:90%;
     margin-bottom: 1%;
-    margin-right:3%;
+    margin-right:1%;
   }
   
-  img {
-    width: 95%;
-    height: 95%;
+  .avatar {
+    height: 100%;
     border-radius: 50%;
     float: left;
   }
@@ -60,17 +59,17 @@ template.innerHTML = `
     flex-direction: row;
     justify-content: space-around;
     margin-bottom: 4%;
-    cursor: pointer;
+    
   }
   
   .arrow {
     width : 10%;
     color:white;
-    height: 40%;
+    height: 60%;
     float: left;
-    margin-bottom: 4%;
-    margin-left: 5%;
-    cursor: pointer;
+    margin-bottom: 2.6%;
+    margin-left: 4%;
+   
   }
   
   .top_icons {
@@ -92,6 +91,10 @@ template.innerHTML = `
     float: right;
     color: #DDA0DD;
   }
+  
+  .fa {
+    cursor: pointer;
+  }
 
 </style>
 
@@ -108,12 +111,12 @@ template.innerHTML = `
     </div>
     <div class="message-header-bottom">
         <div class="arrow">
-            <span style="font-size: 22px; color: white;">
+            <span style="font-size: 26px; color: white;">
                 <i class="fa fa-arrow-left"></i>
             </span>
         </div>
         <div class="message-header-img">
-            <img>
+            <img class="avatar">
         </div>
 
         <div class="username">

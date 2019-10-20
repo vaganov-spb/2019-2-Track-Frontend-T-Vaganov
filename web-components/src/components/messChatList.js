@@ -1,3 +1,5 @@
+import { Fill } from './localStorageFill';
+
 const template = document.createElement('template');
 template.innerHTML = `
 <style>
@@ -40,7 +42,7 @@ template.innerHTML = `
     display:flex;
     flex-direction: column;
     padding-left:3%;
-    overflow: scroll;
+    overflow-y: auto;
   }
 
   .mes-list-bottom {
@@ -72,7 +74,7 @@ template.innerHTML = `
   .br {
     margin-left:15%;
     width:60%;
-    -webkit-filter: invert(100%);
+    filter: invert(200%);
   }
 
   .Message {
@@ -84,6 +86,22 @@ template.innerHTML = `
     padding-top:16%;
     padding-left:30%;
   }
+
+  .new-chat {
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    height:70px;
+    width:70px;
+    border-radius:50%;
+  }
+
+  .Cr-chat {
+    border-radius:50%;
+    width:100%;
+    cursor:pointer;
+  }
+
 </style>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -127,9 +145,20 @@ template.innerHTML = `
     <chat-preview chat-id="1"></chat-preview>
     <chat-preview chat-id="2"></chat-preview>
     <chat-preview chat-id="3"></chat-preview>
+    <chat-preview chat-id="4"></chat-preview>
+    <chat-preview chat-id="5"></chat-preview>
+    <chat-preview chat-id="6"></chat-preview>
+    <chat-preview chat-id="7"></chat-preview>
+    <chat-preview chat-id="8"></chat-preview>
+    <chat-preview chat-id="9"></chat-preview>
+    <chat-preview chat-id="10"></chat-preview>
+    <div class="new-chat">
+      <img class="Cr-chat" src='https://www.clan-tlh.com/wp-content/uploads/2018/11/onlineExp_chat_icon1.png'>
+    </div>
 </div>
 `;
 
+Fill();
 
 class ChatMesList extends HTMLElement {
   constructor() {

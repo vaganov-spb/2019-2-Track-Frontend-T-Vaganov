@@ -1,9 +1,7 @@
-// import { directive } from '@babel/types';
-
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        form-input {
+        .form-input {
             width: 100%;
         }
 
@@ -15,13 +13,9 @@ template.innerHTML = `
             display: flex;
             flex-direction:column;
             align-items: flex-end;
-            overflow:scroll;  
+            overflow-y: scroll;  
         }
-        
-        input[type=submit] {
-            visibility: collapse;
-        }
-        
+          
         .inp {
             display: flex;
             flex-direction:row;
@@ -29,7 +23,7 @@ template.innerHTML = `
             height: 40px;
         }
 
-        img {
+        .image {
              width:10%;
              height:90%;
         }
@@ -39,8 +33,8 @@ template.innerHTML = `
     
         <div class="result"></div>
         <div class="inp">
-            <form-input name="message-text" placeholder="Cooбщение"></form-input>
-            <img src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png">
+            <form-input class="form-input" name="message-text" placeholder="Cooбщение"></form-input>
+            <img class="image" src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png">
            
         </div>
     </form>
@@ -66,10 +60,13 @@ class MessageForm extends HTMLElement {
   _loadFromLS() {
     if (this._chatId !== -1) {
       this.$message.innerHTML = '';
-      JSON.parse(localStorage.getItem(`${this._chatId}`)).mes.forEach((item) => {
-        this.$message.insertAdjacentHTML('beforeend', `<mess-rule message="${item[0]}" time="${item[1]}:${item[2]}"></mess-rule>`);
-        this.$message.scrollTop = this.$message.scrollHeight;
-      });
+      const obj = JSON.parse(localStorage.getItem(`${this._chatId}`));
+      if ('mes' in obj && obj.mes != null) {
+        JSON.parse(localStorage.getItem(`${this._chatId}`)).mes.forEach((item) => {
+          this.$message.insertAdjacentHTML('beforeend', `<mess-rule message="${item[0]}" time="${item[1]}:${item[2]}"></mess-rule>`);
+          this.$message.scrollTop = this.$message.scrollHeight;
+        });
+      }
     }
   }
 
