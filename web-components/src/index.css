@@ -13,8 +13,8 @@ html {
   flex-direction: column;
   margin-top: 2%;
   height: auto;
-  width: 30%;
-  margin-left: 35%;
+  width: 384px;
+  position: relative;
 }
 
 body {
@@ -25,5 +25,8 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   font-weight: 400;
   line-height: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 

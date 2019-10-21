@@ -4,9 +4,11 @@ template.innerHTML = `
 <style>
 .chat-pre {
   display:flex;
+  min-height:54px;
   max-height:55px;
   width: 100%;
   flex-direction: row;
+  flex:none;
 }
  
 .foto {
@@ -15,13 +17,14 @@ template.innerHTML = `
   border-radius:50%;
 }
 
-img {
+.user_foto {
   width: 100%;
   height:100%;
   border-radius:50%;
 }
 
 .pers-info {
+  min-height:53px;
   height:100%;
   width:88%;
   border: 1px solid #DCDCDC;
@@ -53,8 +56,10 @@ img {
   font-size:13px;
   color:grey;
   max-width:100%;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  height:20px;
 }
 
 .time-check {
@@ -73,6 +78,7 @@ img {
 .time {
   color:grey;
   font-size:12px;
+  height: 15px;
 }
 
 .indicate {
@@ -88,9 +94,7 @@ img {
 
 .indicator {
   width:40%;
-  -webkit-filter: invert(.999); /* Safari 6.0 - 9.0 */
-  filter: invert(.999);
-  float:center;
+  filter: invert(0.999);
   margin-left:12%;
 }
 
@@ -159,19 +163,28 @@ class ChatPreview extends HTMLElement {
       this.$name.innerText = JSON.parse(localStorage.getItem(`${newValue}`)).name;
       // eslint-disable-next-line prefer-destructuring
 
-      const text = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][0];
-      const hours = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][1];
-      const minutes = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][2];
-      this.$time.innerText = `${hours}:${minutes}`;
+      const obj = JSON.parse(localStorage.getItem(`${newValue}`));
+      if ('mes' in obj && obj.mes.length !== 0) {
+        const text = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][0];
+        this.$lastmes.innerText = text;
+        const hours = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][1];
+        const minutes = JSON.parse(localStorage.getItem(`${newValue}`)).mes[JSON.parse(localStorage.getItem(`${newValue}`)).mes.length - 1][2];
+        this.$time.innerText = `${hours}:${minutes}`;
+      } else {
+        this.$lastmes.innerText = '';
+        this.$time.innerText = '';
+        obj.mes = [];
+        obj.flag = null;
+        localStorage.setItem(`${this._chatId}`, JSON.stringify(obj));
+      }
 
       this.$photo.setAttribute('src', JSON.parse(localStorage.getItem(`${newValue}`)).url);
 
-      this.$lastmes.innerText = text;
-
       const flag = JSON.parse(localStorage.getItem(`${this._chatId}`)).flag;
-      if (flag !== true) {
+      if (flag === false) {
         this.$indicator.setAttribute('src', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png');
-      } else {
+      }
+      if (flag === true) {
         this.$indicator.setAttribute('src', 'https://cdn.iconscout.com/icon/premium/png-512-thumb/double-tick-2-571364.png');
       }
     }
