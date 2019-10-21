@@ -154,6 +154,20 @@ class Chats extends HTMLElement {
     this.$img = this.shadowRoot.querySelector('img');
   }
 
+
+  _loadInfo() {
+    if (this._chatId !== -1) {
+      if (localStorage.getItem(`${this._chatId}`) === null) {
+        localStorage.setItem(`${this._chatId}`, JSON.stringify({
+          name: 'Jennyfer Eshley',
+          flag: true,
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Emoji_u1f608.svg/1024px-Emoji_u1f608.svg.png',
+          mes: [['qwerr', 10, 22], ['drcfrckfmfvkm', 22, 43]],
+        }));
+      }
+    }
+  }
+
   static get observedAttributes() {
     return ['chat-id'];
   }
@@ -161,6 +175,7 @@ class Chats extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'chat-id') {
       this._chatId = newValue;
+      this._loadInfo();
       this.$chat.setAttribute(name, newValue);
       this.$user.innerText = JSON.parse(localStorage.getItem(`${newValue}`)).name;
       this.$img.src = JSON.parse(localStorage.getItem(`${newValue}`)).url;
