@@ -67,7 +67,7 @@ template.innerHTML = `
     color:white;
     height: 60%;
     float: left;
-    margin-bottom: 2.6%;
+    margin-bottom: 2%;
     margin-left: 4%;
    
   }
@@ -94,6 +94,10 @@ template.innerHTML = `
   
   .fa {
     cursor: pointer;
+  }
+
+  .fa .fa-arrow-left {
+    margin-top 2px;
   }
 
 </style>
