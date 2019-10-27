@@ -16,12 +16,22 @@ template.innerHTML = `
     padding:5px 12px 3px 8px;
     box-shadow: 0 1px 1px #dfbddf;
     flex: none;
+    
+    animation: creating 1.0s 1;
 }
 
-.text_ms {
+@keyframes creating {
+  0% {
+    transform: scale(0.0, 0.0);
+    transform-origin:bottom right;
+    animation-timing-function: ease-in;
+  }
+}
+
+ .text_ms {
     line-height:18px;
     word-wrap:break-word;
-}
+ }
 
 .text {
     width:100%;

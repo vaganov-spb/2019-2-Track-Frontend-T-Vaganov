@@ -65,7 +65,6 @@ template.innerHTML = `
   }
 
   .burg-icon{
-    width = 10%;
     height:100%
     margin-left:10%;
     margin-top:3%;
@@ -89,18 +88,61 @@ template.innerHTML = `
 
   .new-chat {
     position:absolute;
-    right:10px;
-    bottom:10px;
-    height:70px;
-    width:70px;
+    right:12px;
+    bottom:12px;
+    height:65px;
+    width:65px;
     border-radius:50%;
   }
 
   .Cr-chat {
+    display: block;
     border-radius:50%;
     width:100%;
     cursor:pointer;
+    filter:brightness(160%);
+    box-shadow: 0 0 0 rgba(16, 125, 238, 1);
+    animation: pulse 1.5s infinite;
   }
+
+  .Cr-chat:hover {
+    animation: none;
+  }
+  
+  @keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 125, 238, 1);
+    }
+    30% {
+      box-shadow: 0 0 0 0 rgba(16, 125, 238, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 9px rgba(16, 125, 238, 0);      
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 125, 238, 0);    
+    }
+  }
+
+  chat-preview {
+    color:black;
+    transition: box-shadow 1.5s, border-radius 1.5s, backdrop-filter 1.0s;
+  }
+
+  chat-preview:hover {
+    box-shadow: 0 0 10px #8e24aa;
+    border-radius: 22px;
+    border: 1px solid #8e24aa;
+    --border: None;
+  }
+
+  chat-preview:active {
+    color:yellow;
+    backdrop-filter: invert(.999);
+    filter:brightness(200%);
+  }
+
+ 
 
 </style>
 
@@ -153,7 +195,7 @@ template.innerHTML = `
     <chat-preview chat-id="9"></chat-preview>
     <chat-preview chat-id="10"></chat-preview>
     <div class="new-chat">
-      <img class="Cr-chat" src='https://www.clan-tlh.com/wp-content/uploads/2018/11/onlineExp_chat_icon1.png'>
+      <img class="Cr-chat" src='https://cdn1.iconfinder.com/data/icons/ui-5/502/chat-512.png'>
     </div>
 </div>
 `;
