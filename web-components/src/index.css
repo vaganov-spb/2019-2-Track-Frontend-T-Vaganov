@@ -33,13 +33,6 @@ body {
   justify-content: center;
 }
 
-@viewport {
-  max-width: device-width;
-  max-height: device-height;
-  zoom: 2.0;
-  user-zoom: fixed;
-}
-
 @media screen and (max-width:767px){
   #container{
     width:100vw;
