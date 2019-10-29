@@ -5,7 +5,6 @@ template.innerHTML = `
 .chat-pre {
   display:flex;
   min-height:54px;
-  max-height:55px;
   width: 100%;
   flex-direction: row;
   flex:none;
@@ -27,7 +26,7 @@ template.innerHTML = `
   min-height:53px;
   height:100%;
   width:88%;
-  border: 1px solid #DCDCDC;
+  border: var(--border);
   border-top:none;
   border-left:none;
   border-right:none;
@@ -44,7 +43,7 @@ template.innerHTML = `
 }
 
 .Name {
-  color:black;
+  
 }
 
 .usr_name {
@@ -100,30 +99,30 @@ template.innerHTML = `
 
 </style>
 
-<div class="chat-pre" chat-id ="1">
-<div class="foto">  
-        <img class="user_foto">
-</div>
-<div class="pers-info">
-    <div class="user-info">
-        <div class="Name">
-            <span class="usr_name"></span>
-        </div>
-        <div class="last-mes">
-            <div class="last-ms"></div>
-        </div>
-    </div>
-    <div class="time-check">
-        <div class="Time">
-            <span class="time"></span>
-        </div>  
-        <div class="indicate">
-            <div class="indicate-img">
-                <img class="indicator">
-            </div>
-        </div>
-    </div>
-</div>     
+<div class="chat-pre" >
+  <div class="foto">  
+          <img class="user_foto">
+  </div>
+  <div class="pers-info">
+      <div class="user-info">
+          <div class="Name">
+              <span class="usr_name"></span>
+          </div>
+          <div class="last-mes">
+              <div class="last-ms"></div>
+          </div>
+      </div>
+      <div class="time-check">
+          <div class="Time">
+              <span class="time"></span>
+          </div>  
+          <div class="indicate">
+              <div class="indicate-img">
+                  <img class="indicator">
+              </div>
+          </div>
+      </div>
+  </div>     
 </div>
 `;
 
