@@ -1,0 +1,89 @@
+.mess_header {
+  height: 67px;
+  border: 1px solid var(--violet);
+  background-color: var(--violet);
+  display: flex;
+  flex-direction: column;
+}
+
+.icons {
+  height: 17px;
+  width: 100%;
+}
+
+.top_icons {
+  float: right;
+  width: 20%;
+  height: 100%;
+}
+
+.place_top_icons {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.mes_list_bottom {
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+}
+
+.burger {
+  width: 18%;
+}
+
+.written {
+  width: 64%;
+  padding-top: 3.5%;
+  padding-left: 4%;
+}
+
+.search_engine {
+  width: 18%;
+}
+
+.burg_icon {
+  height: 100%;
+  margin-left: 10%;
+}
+
+.br {
+  margin-left: 15%;
+  width: 69%;
+  filter: invert(200%);
+  margin-top: 1px;
+  cursor: pointer;
+}
+
+.Message {
+  color: var(--white);
+  font-size: 21px;
+}
+
+.search_icon {
+  padding-top: 16%;
+  padding-left: 30%;
+}
+
+.new_chat {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+}
+
+.fa_icons {
+  font-size: 15px;
+  color: var(--icons);
+}
+
+.fa_search_icon {
+  font-size: 26px;
+  color: var(--white);
+  cursor: pointer;
+}

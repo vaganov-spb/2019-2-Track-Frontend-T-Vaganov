@@ -1,0 +1,12 @@
+.form {
+  border: 0;
+  outline: none;
+  width: 95%;
+  height: 38px;
+  font-size: 18px;
+  padding: 0 0 0 5%;
+}
+
+:host {
+  display: inline-block;
+}
