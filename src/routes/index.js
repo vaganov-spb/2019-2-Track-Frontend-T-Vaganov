@@ -1,11 +1,10 @@
-/* eslint-disable react/no-string-refs */
-import React, { Component } from 'react';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import styled from '@emotion/styled';
-import { Chat } from '../components/MessageForm';
-import { ChatList } from '../components/ChatList';
-import { Fill } from '../components/LocalStorageFill';
+import React, { Component } from 'react'
+import { Router } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import styled from '@emotion/styled'
+import { Chat } from '../components/MessageForm'
+import { ChatList } from '../components/ChatList'
+import { Fill } from '../components/LocalStorageFill'
 // import CounterContainer from '../containers/CounterContainer';
 // import { Route, Switch } from 'react-router-dom';
 // import Header from '../components/Header';
@@ -17,43 +16,43 @@ const Container = styled.div`
   height: auto;
   width: 384px;
   position: relative;
-`;
-export const history = createBrowserHistory();
-Fill();
+`
+export const history = createBrowserHistory()
+Fill()
 
 class Routes extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props)
 
-		this.state = {
-			component: null,
-		};
-	}
+    this.state = {
+      component: null,
+    }
+  }
 
-	componentWillMount() {
-		this.setState({ component: <ChatList renderChat={(chatId) => this.renderChat(chatId)} /> });
-	}
+  componentWillMount() {
+    this.setState({ component: <ChatList renderChat={(chatId) => this.renderChat(chatId)} /> })
+  }
 
-	renderChat(chatId) {
-		this.setState({ component: <Chat chatId={chatId} renderChatList={() => this.renderChatList()} /> });
-		const obj = JSON.parse(localStorage.getItem(chatId));
-		obj.flag = true;
-		localStorage.setItem(chatId, JSON.stringify(obj));
-	}
+  renderChat(chatId) {
+    this.setState({ component: <Chat chatId={chatId} renderChatList={() => this.renderChatList()} /> })
+    const obj = JSON.parse(localStorage.getItem(chatId))
+    obj.flag = true
+    localStorage.setItem(chatId, JSON.stringify(obj))
+  }
 
-	renderChatList() {
-		this.setState({ component: <ChatList renderChat={(chatId) => this.renderChat(chatId)} /> });
-	}
+  renderChatList() {
+    this.setState({ component: <ChatList renderChat={(chatId) => this.renderChat(chatId)} /> })
+  }
 
-	render() {
-		const { component } = this.state;
+  render() {
+    const { component } = this.state
 
-		return (
-			<Router history={history}>
-				<Container>{component}</Container>
-			</Router>
-		);
-	}
+    return (
+      <Router history={history}>
+        <Container>{component}</Container>
+      </Router>
+    )
+  }
 }
 
-export default Routes;
+export default Routes
