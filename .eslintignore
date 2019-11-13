@@ -1,7 +1,8 @@
 template/
 node_modules/
 build/
-!.eslintrc.js
+!.eslintrc.json
 src/registerServiceWorker.js
-src/utils/serviceWorker.js
+//src/utils/serviceWorker.js
 src/**/__tests__/**
+src/containers/CounterContainer.js

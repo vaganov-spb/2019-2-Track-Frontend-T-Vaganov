@@ -1,0 +1,26 @@
+.forminput {
+  width: 100%;
+}
+
+.result {
+  color: var(--black);
+  border: 1px solid rgba(25, 25, 25, 0.32);
+  height: 400px;
+  background-color: var(--result);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  overflow-y: scroll;
+}
+
+.inp {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid rgba(25, 25, 25, 0.32);
+  height: 40px;
+}
+
+.image {
+  width: 10%;
+  height: 90%;
+}
