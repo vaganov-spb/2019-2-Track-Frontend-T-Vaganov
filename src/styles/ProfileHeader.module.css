@@ -1,0 +1,59 @@
+.main_head {
+  border: 1px solid var(--violet);
+  background-color: var(--violet);
+}
+
+.message_header_bottom {
+  height: 50px;
+  width: 100%;
+  border: 1px solid var(--violet);
+  background-color: var(--violet);
+  align-items: flex-end;
+  flex-direction: row;
+  display: flex;
+  line-height: 90%;
+}
+
+.fa {
+  cursor: pointer;
+}
+
+.fa .fa-arrow-left {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.center {
+  width: 60%;
+  height: 100%;
+  padding-top: 5%;
+}
+
+.edit_profile {
+  margin-left: 15%;
+  font-size: 25px;
+  color: var(--white);
+}
+
+.mark {
+  margin-left: 5%;
+  width: 15%;
+  height: 100%;
+}
+
+.mark_img {
+  margin-top: 24%;
+  margin-left: 50%;
+  width: 40%;
+  filter: invert(0.99);
+  cursor: pointer;
+}
+
+.text {
+  resize: none;
+  min-height:10%;
+  max-height:10%;
+  outline: none;
+  border:none;
+  overflow: hidden;
+}
