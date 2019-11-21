@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { UserContext, UserProvider,  ProfileContext, ProfileProvider } from './UserContext';
 import { HeaderTop } from './ChatList';
 import { ArrowLeft } from './MessageForm';
@@ -8,7 +9,8 @@ import infoStyles from '../styles/ProfileInfo.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-const Link = require('react-router-dom').Link;
+
+// const Link = require('react-router-dom').Link;
 
 export function ProfileHeader(props) {
 	const user = useContext(UserContext);

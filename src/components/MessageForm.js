@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import messageStyles from '../styles/MessageForm.module.css';
 import { HeaderTop } from './ChatList';
 import formStyles from '../styles/FormInput.module.css';
@@ -7,7 +8,7 @@ import headStyles from '../styles/ChatHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-const Link = require('react-router-dom').Link;
+// const Link = require('react-router-dom').Link;
 
 export function ArrowLeft(props) {
 	return (

@@ -1,11 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import previewStyles from '../styles/ChatPreview.module.css';
 import headerStyles from '../styles/ChatListHeader.module.css';
 import listStyles from '../styles/ChatList.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-const Link = require('react-router-dom').Link;
+// const Link = require('react-router-dom').Link;
 
 export function HeaderTop(props) {
 	return (
