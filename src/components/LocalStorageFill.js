@@ -23,8 +23,8 @@ const storageArray = [
 		flag: true,
 		url: 'https://lh3.googleusercontent.com/XtyURW0mKNnKu_6TzQ5_WpuKF4A7M1oFV6p828eVEWIvTZPtZz2gq5sNM78jpNPMMRmZ',
 		mes: [
-			['qwerr', 10, 22],
-			['drcfrckfmfvkm', 22, 43],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -33,8 +33,8 @@ const storageArray = [
 		flag: true,
 		url: 'https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg',
 		mes: [
-			['qwerr', 10, 22],
-			['drcfrckfmfvkm', 22, 43],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -43,8 +43,8 @@ const storageArray = [
 		flag: true,
 		url: 'http://www.cubic.net.ua/wp-content/uploads/2018/10/2720751.png',
 		mes: [
-			['qwerr', 10, 22],
-			['drcfrckfmfvkm', 22, 43],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -53,11 +53,8 @@ const storageArray = [
 		flag: true,
 		url: 'https://cdn3.iconfinder.com/data/icons/seo-concept-modern/512/Seo_Teach_services_flat_icon_tool_web-512.png',
 		mes: [
-			['qwerr', 10, 22],
-			['drcfrckfmfvkm', 22, 43],
-			['1frckfmfvkm', 22, 43],
-			['2rcfrckfmfvkm', 22, 43],
-			['qwerr', 10, 22],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -66,8 +63,8 @@ const storageArray = [
 		flag: true,
 		url: 'https://cdn1.iconfinder.com/data/icons/science-and-technology-3-7/128/109-512.png',
 		mes: [
-			['qwerr', 10, 22],
-			['drcfrckfmfvkm', 22, 43],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -83,8 +80,8 @@ const storageArray = [
 		flag: false,
 		url: 'https://cdn0.iconfinder.com/data/icons/avatar-78/128/12-512.png',
 		mes: [
-			['qwerr', 10, 22],
-			['drcfrckfmfvkm', 22, 43],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -93,8 +90,8 @@ const storageArray = [
 		flag: false,
 		url: 'https://cdn3.iconfinder.com/data/icons/education-1-28/49/145-512.png',
 		mes: [
-			['qwerr', 10, 22],
-			['drcrrrrrrrrrrrrrrrrrrrrrrrkfmfvkm', 22, 43],
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
 		],
 	},
 
@@ -102,7 +99,10 @@ const storageArray = [
 		name: 'Jennyfer Eshley',
 		flag: null,
 		url: 'https://med-aprel.ru/wp-content/uploads/2018/01/770136_man_512x512.png',
-		mes: [['qwerr', 10, 22]],
+		mes: [
+			{message: 'qwerr', time: '10:22', type: 'text'},
+			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},
+		]
 	},
 	{
 		name: 'Jennyfer Eshley',

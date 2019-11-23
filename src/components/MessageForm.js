@@ -8,7 +8,6 @@ import headStyles from '../styles/ChatHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-// const Link = require('react-router-dom').Link;
 
 export function ArrowLeft(props) {
 	return (
@@ -52,9 +51,19 @@ export function HeaderChat(props) {
 }
 
 export function Message(props) {
+	const value = props.text;
+	let content = props.text;
+	if(value.startsWith('http')) {
+		content = <a href={value}> {value}</a>;
+	} 
+	if(props.type === 'img') {
+		content= <img className={ruleStyles.images} src={props.text} alt=''/>;
+	}
 	return (
 		<div className={ruleStyles.message}>
-			<div className={[ruleStyles.textMs, ruleStyles.text].join(' ')}>{props.text}</div>
+			<div className={[ruleStyles.textMs, ruleStyles.text].join(' ')}>
+				{content}
+			</div>
 			<div className={[ruleStyles.textMs, ruleStyles.rightText].join(' ')}>{props.Date}</div>
 		</div>
 	);
@@ -90,6 +99,11 @@ export class Chat extends React.Component {
 		windowSize.scrollTop = windowSize.scrollHeight - 400;
 	}
 
+	static preventDefaults(e){
+		e.preventDefault();
+		e.stopPropagation();
+	}
+
 	constructor(props) {
 		super(props);
 		const params = new URLSearchParams(props.location.search);
@@ -100,10 +114,15 @@ export class Chat extends React.Component {
 			name: '',
 			url: '',
 		};
-
+		this.myRef = React.createRef();
 		this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
 		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
+		this.Geo = this.Geo.bind(this);
+		this.FileUpload = this.FileUpload.bind(this);
+		this.fileChange = this.fileChange.bind(this);
+		this.DragDrop = this.DragDrop.bind(this);
+		this.FileTransfer = this.FileTransfer.bind(this);
 	}
 
 	componentWillMount() {
@@ -111,8 +130,8 @@ export class Chat extends React.Component {
 		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
 		this.setState({ name: Data.name, url: Data.url });
 		if ('mes' in Data && Data.mes != null) {
-			Data.mes.forEach((item) => {
-				messages.push({ text: `${item[0]}`, date: `${item[1]}:${item[2]}` });
+			Data.mes.forEach((item, index) => {
+				messages.push({ text: Data.mes[index].message, date: Data.mes[index].time, type: Data.mes[index].type });
 			});
 			this.setState({ messages }, Chat.scrollTop);
 		}
@@ -136,11 +155,32 @@ export class Chat extends React.Component {
 			hours = `0${time.getHours()}`;
 		}
 		if (this.state.value !== '') {
-			this.setState({ messages: [...messages, { text: this.state.value, date: `${hours}:${minutes}` }] }, () =>
+			this.setState({ messages: [...messages, { text: this.state.value, date: `${hours}:${minutes}`,type:'text', }]}, () =>
 				this.saveToLocalStorage(value, hours, minutes),
 			);
 			this.setState({ value: '' }, Chat.scrollTop);
 		}
+	}
+
+
+	Geo() {
+		const options = {
+			enableHighAccuracy: true,
+			timeout: 5000,
+			maximumAge: 0
+		};
+			
+		const success = (pos) => {
+			const crd = pos.coords;
+			this.setState({ value: `https://www.openstreetmap.org/#map=18/${crd.latitude}/${crd.longitude}`}, this.onSendClick);
+		};
+		
+		const error = (err) => {
+			this.setState({ value: 'Не удалось отправить геопозицию'});
+		};
+
+		navigator.geolocation.getCurrentPosition(success, error, options);
+	
 	}
 
 	changeText(text) {
@@ -150,20 +190,74 @@ export class Chat extends React.Component {
 	saveToLocalStorage(message, hours, minutes) {
 		const obj = JSON.parse(localStorage.getItem(`${this.chatId}`));
 		obj.flag = false;
-		obj.mes.push([message, hours, minutes]);
+		obj.mes.push({message, time: `${hours}:${minutes}`, type: 'text'});
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(obj));
 	}
+
+	FileUpload(event) {
+		const uploadfile = this.myRef.current;
+		uploadfile.click();
+		event.preventDefault();
+	}
+
+	FileTransfer(event){
+		this.fileChange(event.target.files);
+	}
+
+	fileChange(files) {
+		let { messages } = this.state;
+		const message = [];
+		if(files) {
+			for(let i = 0; i < files.length; i+=1 ) {
+				const value = window.URL.createObjectURL(files[i]);
+				const time = new Date();
+				let hours = time.getHours();
+				let minutes = time.getMinutes();
+				if (Number(time.getMinutes()) < 10) {
+					minutes = `0${String(time.getMinutes())}`;
+				}
+				if (time.getHours() < 10) {
+					hours = `0${time.getHours()}`;
+				}
+				message.push({text: value, date: `${hours}:${minutes}`, type: 'img'});
+				const data = new FormData();
+				data.append('image', files[i]);
+				fetch('https://tt-front.now.sh/upload', {
+					method: 'POST',
+					body: data,
+				}).then((response) => {console.log(response);});
+			}
+			messages = messages.concat(message);
+			this.setState({ messages }, Chat.scrollTop);
+		}
+	}
+
+	DragDrop(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		const dt = event.dataTransfer;
+		const files = dt.files;
+		this.fileChange(files);
+	}
+
 
 	render() {
 		const { messages } = this.state;
 		return (
 			<React.Fragment>
-				<HeaderChat name={this.state.name} url={this.state.url} /* rerender={this.props.renderChatList} *//>
+				<HeaderChat name={this.state.name} url={this.state.url}/>
 				<form>
-					<div className={messageStyles.result} id="result">
-						{messages.map((message, index) => (
-							<Message key={index} text={message.text} Date={message.date} />
-						))}
+					<div
+						className={messageStyles.result}
+						id="result"
+						onDrop={this.DragDrop}
+						onDragLeave={this.preventDefaults}
+						onDragOver={this.preventDefaults}
+						onDragEnter={this.preventDefaults}
+					>
+						{messages.map((message, index) => {
+							return <Message key={index} text={message.text} Date={message.date} type={message.type} />;
+						})}
 					</div>
 					<div className={messageStyles.inp}>
 						<Input
@@ -172,11 +266,18 @@ export class Chat extends React.Component {
 							textevent={this.changeText}
 							onEnter={this.onSendClick}
 						/>
+						<input 
+							type="file" 
+							ref={this.myRef} 
+							accept="image/*" 
+							capture style={{display: 'None',}} 
+							multiple onChange={this.FileTransfer}
+						/>
 						<img
 							className={messageStyles.image}
 							src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
 							alt=""
-							onClick={this.onSendClick}
+							onClick={this.FileUpload}
 						/>
 					</div>
 				</form>
@@ -184,3 +285,17 @@ export class Chat extends React.Component {
 		);
 	}
 }
+/*
+<img
+className={messageStyles.image}
+src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
+alt=""
+onClick={this.onSendClick}
+/>
+<img
+className={messageStyles.image}
+src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
+alt=""
+onClick={this.Geo}
+/>
+*/

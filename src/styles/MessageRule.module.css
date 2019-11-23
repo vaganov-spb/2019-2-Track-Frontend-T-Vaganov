@@ -40,3 +40,8 @@
   line-height: 12px;
   margin-top: 5px;
 }
+
+.images {
+  display:block;
+  width:100%;
+}
