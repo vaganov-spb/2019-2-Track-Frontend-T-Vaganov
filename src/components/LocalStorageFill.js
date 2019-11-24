@@ -5,6 +5,9 @@ export function Fill() {
 			localStorage.setItem(`${counter}`, JSON.stringify(storageArray[counter - 1]));
 		}
 	}
+	if (localStorage.getItem('profile') === null) {
+		localStorage.setItem('profile', JSON.stringify(storageArray[10]));
+	}
 }
 
 const storageArray = [
@@ -100,5 +103,11 @@ const storageArray = [
 		flag: null,
 		url: 'https://med-aprel.ru/wp-content/uploads/2018/01/770136_man_512x512.png',
 		mes: [['qwerr', 10, 22]],
+	},
+	{
+		name: 'Jennyfer Eshley',
+		nick: '@tony',
+		src: 'https://www.danceschool-nrw.de/wp-content/uploads/2019/05/39-512.png',
+		bio: 'I love pony!',
 	},
 ];

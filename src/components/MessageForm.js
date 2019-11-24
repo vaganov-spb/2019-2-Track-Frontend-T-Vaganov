@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import messageStyles from '../styles/MessageForm.module.css';
 import { HeaderTop } from './ChatList';
 import formStyles from '../styles/FormInput.module.css';
@@ -7,16 +8,28 @@ import headStyles from '../styles/ChatHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
+// const Link = require('react-router-dom').Link;
+
+export function ArrowLeft(props) {
+	return (
+		<div className={headStyles.arrow}>
+			<span className={headStyles.left_icon}>
+				{props.children}
+			</span>
+		</div>
+	);
+}
+
 export function HeaderChat(props) {
 	return (
 		<div className={headStyles.main_head}>
 			<HeaderTop />
 			<div className={headStyles.message_header_bottom}>
-				<div className={headStyles.arrow}>
-					<span className={headStyles.left_icon}>
-						<i className="fa fa-arrow-left" onClick={() => props.rerender()} />
-					</span>
-				</div>
+				<ArrowLeft>
+					<Link style={{color: 'var(--white)',}} to="/">
+						<i className="fa fa-arrow-left"/>
+					</Link>
+				</ArrowLeft>
 				<div className={headStyles.message_header_img}>
 					<img className={headStyles.avatar} alt="" src={props.url} />
 				</div>
@@ -79,7 +92,8 @@ export class Chat extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.chatId = props.chatId;
+		const params = new URLSearchParams(props.location.search);
+		this.chatId = params.get('chatId');
 		this.state = {
 			messages: [],
 			value: '',
@@ -102,6 +116,12 @@ export class Chat extends React.Component {
 			});
 			this.setState({ messages }, Chat.scrollTop);
 		}
+	}
+
+	componentDidMount() {
+		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
+		Data.flag = true;
+		localStorage.setItem(`${this.chatId}`, JSON.stringify(Data));
 	}
 
 	onSendClick() {
@@ -138,7 +158,7 @@ export class Chat extends React.Component {
 		const { messages } = this.state;
 		return (
 			<React.Fragment>
-				<HeaderChat name={this.state.name} url={this.state.url} rerender={this.props.renderChatList} />
+				<HeaderChat name={this.state.name} url={this.state.url} /* rerender={this.props.renderChatList} *//>
 				<form>
 					<div className={messageStyles.result} id="result">
 						{messages.map((message, index) => (
