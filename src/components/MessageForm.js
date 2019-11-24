@@ -56,9 +56,6 @@ export function Message(props) {
 	if(value.startsWith('http')) {
 		content = <a href={value}> {value}</a>;
 	} 
-	if(props.type === 'img') {
-		content= <img className={ruleStyles.images} src={props.text} alt=''/>;
-	}
 	return (
 		<div className={ruleStyles.message}>
 			<div className={[ruleStyles.textMs, ruleStyles.text].join(' ')}>
@@ -67,6 +64,18 @@ export function Message(props) {
 			<div className={[ruleStyles.textMs, ruleStyles.rightText].join(' ')}>{props.Date}</div>
 		</div>
 	);
+}
+
+export function ImageMessage(props){
+	const img = props.img;
+	const date = props.Date;
+	return (
+		<div className={ruleStyles.imagewrap}>
+			<img className={ruleStyles.image} src={img} alt=''/>
+			<div className={ruleStyles.date}>{date}</div>
+		</div>
+	);
+	
 }
 
 export function Input(props) {
@@ -104,6 +113,19 @@ export class Chat extends React.Component {
 		e.stopPropagation();
 	}
 
+	static setTime() {
+		const time = new Date();
+		let hours = time.getHours();
+		let minutes = time.getMinutes();
+		if (Number(time.getMinutes()) < 10) {
+			minutes = `0${String(time.getMinutes())}`;
+		}
+		if (time.getHours() < 10) {
+			hours = `0${time.getHours()}`;
+		}
+		return `${hours}:${minutes}`;
+	}
+
 	constructor(props) {
 		super(props);
 		const params = new URLSearchParams(props.location.search);
@@ -114,15 +136,16 @@ export class Chat extends React.Component {
 			name: '',
 			url: '',
 		};
+		this.imagecomp = [];
 		this.myRef = React.createRef();
 		this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
 		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
-		this.Geo = this.Geo.bind(this);
-		this.FileUpload = this.FileUpload.bind(this);
+		this.onGeo = this.onGeo.bind(this);
+		this.fileUpload = this.fileUpload.bind(this);
 		this.fileChange = this.fileChange.bind(this);
-		this.DragDrop = this.DragDrop.bind(this);
-		this.FileTransfer = this.FileTransfer.bind(this);
+		this.dragDrop = this.dragDrop.bind(this);
+		this.fileTransfer = this.fileTransfer.bind(this);
 	}
 
 	componentWillMount() {
@@ -143,27 +166,27 @@ export class Chat extends React.Component {
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(Data));
 	}
 
+	componentWillUnmount(){
+		// console.log(this.imagecomp);
+		this.imagecomp.forEach((item) => {
+			window.URL.revokeObjectURL(item);
+		});
+		// console.log(this.imagecomp);
+	}
+
 	onSendClick() {
 		const { messages, value } = this.state;
-		const time = new Date();
-		let hours = time.getHours();
-		let minutes = time.getMinutes();
-		if (Number(time.getMinutes()) < 10) {
-			minutes = `0${String(time.getMinutes())}`;
-		}
-		if (time.getHours() < 10) {
-			hours = `0${time.getHours()}`;
-		}
+		const time = Chat.setTime();
 		if (this.state.value !== '') {
-			this.setState({ messages: [...messages, { text: this.state.value, date: `${hours}:${minutes}`,type:'text', }]}, () =>
-				this.saveToLocalStorage(value, hours, minutes),
+			this.setState({ messages: [...messages, { text: this.state.value, date: time,type:'text', }]}, () =>
+				this.saveToLocalStorage(value, time),
 			);
 			this.setState({ value: '' }, Chat.scrollTop);
 		}
 	}
 
 
-	Geo() {
+	onGeo() {
 		const options = {
 			enableHighAccuracy: true,
 			timeout: 5000,
@@ -176,7 +199,7 @@ export class Chat extends React.Component {
 		};
 		
 		const error = (err) => {
-			this.setState({ value: 'Не удалось отправить геопозицию'});
+			alert('Не удалось отправить геопозицию');
 		};
 
 		navigator.geolocation.getCurrentPosition(success, error, options);
@@ -187,39 +210,33 @@ export class Chat extends React.Component {
 		this.setState({ value: text });
 	}
 
-	saveToLocalStorage(message, hours, minutes) {
+	saveToLocalStorage(message, time) {
 		const obj = JSON.parse(localStorage.getItem(`${this.chatId}`));
 		obj.flag = false;
-		obj.mes.push({message, time: `${hours}:${minutes}`, type: 'text'});
+		obj.mes.push({message, time, type: 'text'});
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(obj));
 	}
 
-	FileUpload(event) {
+	fileUpload(event) {
 		const uploadfile = this.myRef.current;
 		uploadfile.click();
 		event.preventDefault();
 	}
 
-	FileTransfer(event){
+	fileTransfer(event){
 		this.fileChange(event.target.files);
 	}
 
 	fileChange(files) {
 		let { messages } = this.state;
 		const message = [];
+		const images = [];
 		if(files) {
 			for(let i = 0; i < files.length; i+=1 ) {
 				const value = window.URL.createObjectURL(files[i]);
-				const time = new Date();
-				let hours = time.getHours();
-				let minutes = time.getMinutes();
-				if (Number(time.getMinutes()) < 10) {
-					minutes = `0${String(time.getMinutes())}`;
-				}
-				if (time.getHours() < 10) {
-					hours = `0${time.getHours()}`;
-				}
-				message.push({text: value, date: `${hours}:${minutes}`, type: 'img'});
+				const time =Chat.setTime();
+				images.push(value);
+				message.push({text: value, date: time, type: 'img'});
 				const data = new FormData();
 				data.append('image', files[i]);
 				fetch('https://tt-front.now.sh/upload', {
@@ -229,10 +246,13 @@ export class Chat extends React.Component {
 			}
 			messages = messages.concat(message);
 			this.setState({ messages }, Chat.scrollTop);
+			// console.log(this.imagecomp);
+			this.imagecomp = this.imagecomp.concat(images);
+			// console.log(this.imagecomp);
 		}
 	}
 
-	DragDrop(event) {
+	dragDrop(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		const dt = event.dataTransfer;
@@ -250,34 +270,52 @@ export class Chat extends React.Component {
 					<div
 						className={messageStyles.result}
 						id="result"
-						onDrop={this.DragDrop}
-						onDragLeave={this.preventDefaults}
-						onDragOver={this.preventDefaults}
-						onDragEnter={this.preventDefaults}
+						onDrop={this.dragDrop}
+						onDragLeave={Chat.preventDefaults}
+						onDragOver={Chat.preventDefaults}
+						onDragEnter={Chat.preventDefaults}
 					>
 						{messages.map((message, index) => {
-							return <Message key={index} text={message.text} Date={message.date} type={message.type} />;
+							if (message.type === 'text') {
+								return <Message key={index} text={message.text} Date={message.date} />;
+							} 
+							if (message.type === 'img') {
+								return <ImageMessage key={index} img={message.text} Date={message.date}/>;
+							}
+							return <div key={index}/>;
 						})}
 					</div>
 					<div className={messageStyles.inp}>
+						<input 
+							type="file" 
+							ref={this.myRef} 
+							accept="image/*" 
+							capture style={{display: 'None',}} 
+							multiple onChange={this.fileTransfer}
+						/>
+						<img
+							className={messageStyles.image}
+							src="https://cdn1.iconfinder.com/data/icons/social-17/48/photos2-512.png"
+							alt=""
+							onClick={this.fileUpload}
+						/>
+						<img
+							className={messageStyles.image}
+							src="https://i.pinimg.com/originals/9c/91/98/9c919823b4cac48bec5af1f236a39efd.png"
+							alt=""
+							onClick={this.onGeo}
+						/>
 						<Input
 							className={messageStyles.forminput}
 							value={this.state.value}
 							textevent={this.changeText}
 							onEnter={this.onSendClick}
 						/>
-						<input 
-							type="file" 
-							ref={this.myRef} 
-							accept="image/*" 
-							capture style={{display: 'None',}} 
-							multiple onChange={this.FileTransfer}
-						/>
 						<img
 							className={messageStyles.image}
 							src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
 							alt=""
-							onClick={this.FileUpload}
+							onClick={this.onSendClick}
 						/>
 					</div>
 				</form>
@@ -285,17 +323,3 @@ export class Chat extends React.Component {
 		);
 	}
 }
-/*
-<img
-className={messageStyles.image}
-src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
-alt=""
-onClick={this.onSendClick}
-/>
-<img
-className={messageStyles.image}
-src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
-alt=""
-onClick={this.Geo}
-/>
-*/

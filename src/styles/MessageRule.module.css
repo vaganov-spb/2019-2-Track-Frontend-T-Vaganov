@@ -41,7 +41,40 @@
   margin-top: 5px;
 }
 
-.images {
-  display:block;
-  width:100%;
+.imagewrap {
+  max-width: 200px;
+  min-width: 200px;
+  margin: 0 2px 4px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0 0 0 0;
+  flex: none;
+  animation: creating 1s 1;
+  position: relative;
+}
+
+.image {
+  border-radius: 5px;
+  display: block;
+  min-height:40px;
+  max-height: 120px;
+  width: 100%;
+}
+
+.date {
+  position: absolute;
+  width: 15%;
+  height: 15px;
+  bottom: 5px;
+  right: 5px;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--grey);
+  color: var(--white);
+  font-size: 10px;
+  filter: opacity(0.4);
 }
