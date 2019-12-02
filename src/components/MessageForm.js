@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
