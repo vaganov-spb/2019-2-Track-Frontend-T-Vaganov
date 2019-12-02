@@ -1,6 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Router , Route, Switch } from 'react-router-dom';
+import { Router , Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import styled from '@emotion/styled';
 import { Chat } from '../components/MessageForm';
@@ -31,6 +31,7 @@ class Routes extends Component {
 						<Route exact path='/' component={ChatList} />
 						<Route path='/chat/' component={Chat} />
 						<Route path='/profile/' component={Profile} />
+						<Redirect from='*' to='/' />
 					</Switch>
 				</Container>
 			</Router>

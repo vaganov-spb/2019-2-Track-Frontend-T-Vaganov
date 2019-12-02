@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/media-has-caption */
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import messageStyles from '../styles/MessageForm.module.css';
 import { HeaderTop } from './ChatList';
@@ -75,7 +76,83 @@ export function ImageMessage(props){
 			<div className={ruleStyles.date}>{date}</div>
 		</div>
 	);
-	
+}
+
+export function VoiceMessage(props) {
+	return(
+		<audio className={ruleStyles.audio} controls="controls" preload="auto">
+			<source src={props.audio} />
+		</audio> 
+	);
+}
+
+export function RightButtons(props) {
+	const [isRecording, setRecordState] = useState(false);
+	const [chunks, setChunks] = useState([]);
+	const [recorder, setRecorder] = useState(null);
+	const [stream, setStream] = useState(null);
+
+	async function onAudio(){
+		try {
+			if (!isRecording) {
+				const streaming = await navigator.mediaDevices.getUserMedia({
+					audio: true,
+					video: false
+				});
+				setStream(streaming);
+				const mimeType = 'audio/webm';
+				const audio =  new MediaRecorder(stream, { type: mimeType });
+
+				audio.addEventListener('dataavailable', (event) => {
+					if (event.data.size > 0) {
+						setChunks([...chunks, event.data]);
+					}
+				});
+
+				audio.start();
+				setRecorder(audio);
+				setRecordState(true);
+			} else {
+				setRecordState(false);
+				recorder.stop();
+				const track = stream.getTracks()[0];
+				track.stop();
+				setChunks([]);
+			}
+		} catch {
+			console.log('You denied access to the microphone.');
+		}
+	} 
+
+	function Send() {
+		props.send();
+	}
+
+	useEffect(() => {
+		const mimeType = 'audio/webm';
+		if (!isRecording && chunks.length > 0) {
+			const blob = new Blob(chunks, { type: mimeType });
+			const blobUrl = window.URL.createObjectURL(blob);
+			const time = Chat.setTime();
+			props.audio({ text: blobUrl, date: time, type: 'audio' });
+		}
+	}, [chunks]);
+
+	return(
+		<React.Fragment>
+			<img
+				className={messageStyles.image}
+				src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
+				alt=""
+				onClick={Send}
+			/>
+			<img
+				className={messageStyles.image}
+				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsxjWUIon_ELBJrEW9VYKM_OX6OHJcSVuOO7_6S_F0KGbDNmHT8w&s"alt=""
+				onClick={onAudio}
+			/>
+		</React.Fragment>
+	);
 }
 
 export function Input(props) {
@@ -102,16 +179,80 @@ export function Input(props) {
 	);
 }
 
+
+export function LeftButtons(props){
+	const myRef = React.createRef();
+
+	function fileUpload(event) {
+		const uploadfile = myRef.current;
+		uploadfile.click();
+		event.preventDefault();
+	}
+
+	function fileTransfer(event){
+		props.fileChange(event.target.files);
+	}
+
+
+	function onGeo() {
+		const options = {
+			enableHighAccuracy: true,
+			timeout: 5000,
+			maximumAge: 0
+		};
+			
+		const success = (pos) => {
+			const crd = pos.coords;
+			props.change(`https://www.openstreetmap.org/#map=18/${crd.latitude}/${crd.longitude}`);
+			props.send();
+		};
+		
+		const error = (err) => {
+			alert('Не удалось отправить геопозицию');
+		};
+
+		navigator.geolocation.getCurrentPosition(success, error, options);
+	
+	}
+
+	return(
+		<React.Fragment>
+			<input 
+				type="file" 
+				ref={myRef} 
+				accept="image/*" 
+				capture style={{display: 'None',}} 
+				multiple onChange={fileTransfer}
+			/>
+			<img
+				className={messageStyles.image}
+				src="https://cdn1.iconfinder.com/data/icons/social-17/48/photos2-512.png"
+				alt=""
+				onClick={fileUpload}
+			/>
+			<img
+				className={messageStyles.image}
+				src="https://i.pinimg.com/originals/9c/91/98/9c919823b4cac48bec5af1f236a39efd.png"
+				alt=""
+				onClick={onGeo}
+			/>
+		</React.Fragment>
+	);
+}
+
 export class Chat extends React.Component {
+
 	static scrollTop() {
 		const windowSize = document.getElementById('result');
 		windowSize.scrollTop = windowSize.scrollHeight - 400;
 	}
 
+
 	static preventDefaults(e){
 		e.preventDefault();
 		e.stopPropagation();
 	}
+
 
 	static setTime() {
 		const time = new Date();
@@ -126,6 +267,7 @@ export class Chat extends React.Component {
 		return `${hours}:${minutes}`;
 	}
 
+
 	constructor(props) {
 		super(props);
 		const params = new URLSearchParams(props.location.search);
@@ -136,17 +278,15 @@ export class Chat extends React.Component {
 			name: '',
 			url: '',
 		};
-		this.imagecomp = [];
-		this.myRef = React.createRef();
+		this.attachments= [];
 		this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
-		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
-		this.onGeo = this.onGeo.bind(this);
-		this.fileUpload = this.fileUpload.bind(this);
 		this.fileChange = this.fileChange.bind(this);
+		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
 		this.dragDrop = this.dragDrop.bind(this);
-		this.fileTransfer = this.fileTransfer.bind(this);
+		this.onSendAudio = this.onSendAudio.bind(this);
 	}
+
 
 	componentWillMount() {
 		const messages = [];
@@ -160,19 +300,20 @@ export class Chat extends React.Component {
 		}
 	}
 
+
 	componentDidMount() {
 		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
 		Data.flag = true;
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(Data));
 	}
 
+
 	componentWillUnmount(){
-		// console.log(this.imagecomp);
-		this.imagecomp.forEach((item) => {
+		this.attachments.forEach((item) => {
 			window.URL.revokeObjectURL(item);
 		});
-		// console.log(this.imagecomp);
 	}
+
 
 	onSendClick() {
 		const { messages, value } = this.state;
@@ -186,29 +327,27 @@ export class Chat extends React.Component {
 	}
 
 
-	onGeo() {
-		const options = {
-			enableHighAccuracy: true,
-			timeout: 5000,
-			maximumAge: 0
-		};
-			
-		const success = (pos) => {
-			const crd = pos.coords;
-			this.setState({ value: `https://www.openstreetmap.org/#map=18/${crd.latitude}/${crd.longitude}`}, this.onSendClick);
-		};
-		
-		const error = (err) => {
-			alert('Не удалось отправить геопозицию');
-		};
-
-		navigator.geolocation.getCurrentPosition(success, error, options);
-	
+	onSendAudio(message) {
+		const { messages } = this.state;
+		if (message) {
+			this.setState({ messages: [...messages, message]}, Chat.scrollTop);
+			this.attachments.push(message.text);
+			const data = new FormData();
+			if (message.type === 'audio') {
+				data.append('audio', message.text);
+				fetch('https://tt-front.now.sh/upload', {
+					method: 'POST',
+					body: data,
+				}).then((response) => {console.log(response);});
+			}
+		}
 	}
+
 
 	changeText(text) {
 		this.setState({ value: text });
 	}
+
 
 	saveToLocalStorage(message, time) {
 		const obj = JSON.parse(localStorage.getItem(`${this.chatId}`));
@@ -217,15 +356,15 @@ export class Chat extends React.Component {
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(obj));
 	}
 
-	fileUpload(event) {
-		const uploadfile = this.myRef.current;
-		uploadfile.click();
+
+	dragDrop(event) {
 		event.preventDefault();
+		event.stopPropagation();
+		const dt = event.dataTransfer;
+		const files = dt.files;
+		this.fileChange(files);
 	}
 
-	fileTransfer(event){
-		this.fileChange(event.target.files);
-	}
 
 	fileChange(files) {
 		let { messages } = this.state;
@@ -246,18 +385,8 @@ export class Chat extends React.Component {
 			}
 			messages = messages.concat(message);
 			this.setState({ messages }, Chat.scrollTop);
-			// console.log(this.imagecomp);
-			this.imagecomp = this.imagecomp.concat(images);
-			// console.log(this.imagecomp);
+			this.attachments= this.attachments.concat(images);
 		}
-	}
-
-	dragDrop(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		const dt = event.dataTransfer;
-		const files = dt.files;
-		this.fileChange(files);
 	}
 
 
@@ -282,41 +411,21 @@ export class Chat extends React.Component {
 							if (message.type === 'img') {
 								return <ImageMessage key={index} img={message.text} Date={message.date}/>;
 							}
+							if (message.type === 'audio'){
+								return <VoiceMessage key={index} audio={message.text}/>;
+							}
 							return <div key={index}/>;
 						})}
 					</div>
 					<div className={messageStyles.inp}>
-						<input 
-							type="file" 
-							ref={this.myRef} 
-							accept="image/*" 
-							capture style={{display: 'None',}} 
-							multiple onChange={this.fileTransfer}
-						/>
-						<img
-							className={messageStyles.image}
-							src="https://cdn1.iconfinder.com/data/icons/social-17/48/photos2-512.png"
-							alt=""
-							onClick={this.fileUpload}
-						/>
-						<img
-							className={messageStyles.image}
-							src="https://i.pinimg.com/originals/9c/91/98/9c919823b4cac48bec5af1f236a39efd.png"
-							alt=""
-							onClick={this.onGeo}
-						/>
+						<LeftButtons change={this.changeText} send={this.onSendClick} fileChange={this.fileChange}/>
 						<Input
 							className={messageStyles.forminput}
 							value={this.state.value}
 							textevent={this.changeText}
 							onEnter={this.onSendClick}
 						/>
-						<img
-							className={messageStyles.image}
-							src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
-							alt=""
-							onClick={this.onSendClick}
-						/>
+						<RightButtons send={this.onSendClick} audio={this.onSendAudio}/>
 					</div>
 				</form>
 			</React.Fragment>
