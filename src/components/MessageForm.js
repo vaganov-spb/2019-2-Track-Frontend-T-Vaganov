@@ -81,7 +81,7 @@ export function ImageMessage(props){
 
 export function VoiceMessage(props) {
 	return(
-		<audio className={ruleStyles.audio} controls="controls" preload="auto">
+		<audio className={ruleStyles.audio} controls="controls">
 			<source src={props.audio} />
 		</audio> 
 	);
@@ -102,14 +102,12 @@ export function RightButtons(props) {
 				});
 				setStream(streaming);
 				const mimeType = 'audio/webm';
-				const audio =  new MediaRecorder(stream, { type: mimeType });
-
+				const audio =  new MediaRecorder(streaming, { type: mimeType });
 				audio.addEventListener('dataavailable', (event) => {
 					if (event.data.size > 0) {
 						setChunks([...chunks, event.data]);
 					}
 				});
-
 				audio.start();
 				setRecorder(audio);
 				setRecordState(true);
@@ -118,7 +116,6 @@ export function RightButtons(props) {
 				recorder.stop();
 				const track = stream.getTracks()[0];
 				track.stop();
-				setChunks([]);
 			}
 		} catch {
 			console.log('You denied access to the microphone.');
@@ -136,8 +133,9 @@ export function RightButtons(props) {
 			const blobUrl = window.URL.createObjectURL(blob);
 			const time = Chat.setTime();
 			props.audio({ text: blobUrl, date: time, type: 'audio' });
+			setChunks([]);
 		}
-	}, [chunks]);
+	}, [chunks, isRecording]);
 
 	return(
 		<React.Fragment>
