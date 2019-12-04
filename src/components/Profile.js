@@ -10,8 +10,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 
-// const Link = require('react-router-dom').Link;
-
 export function ProfileHeader(props) {
 	const user = useContext(UserContext);
 

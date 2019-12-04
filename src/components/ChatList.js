@@ -6,7 +6,6 @@ import listStyles from '../styles/ChatList.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-// const Link = require('react-router-dom').Link;
 
 export function HeaderTop(props) {
 	return (
@@ -61,8 +60,8 @@ export function ChatPreview(props) {
 	let time = '';
 	let src = '';
 	if (chat.mes.length) {
-		lastMes = chat.mes[chat.mes.length - 1][0];
-		time = `${chat.mes[chat.mes.length - 1][1]}:${chat.mes[chat.mes.length - 1][2]}`;
+		lastMes = chat.mes[chat.mes.length - 1].message;
+		time = chat.mes[chat.mes.length - 1].time;
 	}
 
 	if (chat.flag === true) {
