@@ -1,7 +1,9 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { history } from '../routes/index';
 import messageStyles from '../styles/MessageForm.module.css';
 import { HeaderTop } from './ChatList';
 import formStyles from '../styles/FormInput.module.css';
@@ -63,7 +65,7 @@ export function Message(props) {
 			<div className={[ruleStyles.textMs, ruleStyles.text].join(' ')}>
 				{content}
 			</div>
-			<div className={[ruleStyles.textMs, ruleStyles.rightText].join(' ')}>{props.Date}</div>
+			<div className={[ruleStyles.textMs, ruleStyles.rightText].join(' ')}>{props.Date} from {props.user}</div>
 		</div>
 	);
 }
@@ -132,7 +134,7 @@ export function RightButtons(props) {
 			const blob = new Blob(chunks, { type: mimeType });
 			const blobUrl = window.URL.createObjectURL(blob);
 			const time = Chat.setTime();
-			props.audio({ text: blobUrl, date: time, type: 'audio' });
+			props.audio([{ text: blobUrl, date: time, type: 'audio' }]);
 			setChunks([]);
 		}
 	}, [chunks, isRecording]);
@@ -276,77 +278,151 @@ export class Chat extends React.Component {
 			value: '',
 			name: '',
 			url: '',
+			interval: null,
 		};
+		this.author = null;
+		this.id = null;
 		this.attachments= [];
+		this.pollItems = this.pollItems.bind(this);
+		this.getMessages = this.getMessages.bind(this);
 		this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
 		this.fileChange = this.fileChange.bind(this);
 		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
 		this.dragDrop = this.dragDrop.bind(this);
-		this.onSendAudio = this.onSendAudio.bind(this);
+		this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
 	}
 
-
 	componentWillMount() {
+		let { interval } = this.state;
 		const messages = [];
 		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
 		this.setState({ name: Data.name, url: Data.url });
-		if ('mes' in Data && Data.mes != null) {
-			Data.mes.forEach((item, index) => {
-				messages.push({ text: Data.mes[index].message, date: Data.mes[index].time, type: Data.mes[index].type });
-			});
-			this.setState({ messages }, Chat.scrollTop);
+		if (this.chatId !== 'group') {
+			if ('mes' in Data && Data.mes != null) {
+				Data.mes.forEach((item, index) => {
+					messages.push({ text: Data.mes[index].message, date: Data.mes[index].time, type: Data.mes[index].type });
+				});
+				this.setState({ messages }, Chat.scrollTop);
+			}
+		} else {
+			this.author = prompt('Перед входом в чат укажите имя', '');
+			fetch(`http://localhost:8000/users/auth/?name=${this.author}`)
+				.then(res => {
+					console.log(res.status);
+					if (res.status !== 403){
+						res.json()
+							.then(data => {
+								this.id = data; 
+								fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21`)
+									.then(response => {
+										console.log(response.status);
+										if (response.status === 200){
+											response.json().then(mData => {
+												this.getMessages(mData);
+												interval = setInterval(this.pollItems, 5000); this.setState({interval});
+											});
+										} else {
+											alert('You are not in this chat');
+											history.go(-2);
+										}
+									})
+									.catch(err => console.log(err));});
+					} else {
+						alert('Not Allowed');
+						history.goBack();
+					}
+				})
+				.catch(err => console.log(err));
 		}
 	}
 
-
 	componentDidMount() {
-		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
-		Data.flag = true;
-		localStorage.setItem(`${this.chatId}`, JSON.stringify(Data));
+		if (this.chatId !== 'group') {
+			if (this.state.messages.length){
+				const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
+				Data.flag = true;
+				localStorage.setItem(`${this.chatId}`, JSON.stringify(Data));
+			}
+		}
 	}
-
 
 	componentWillUnmount(){
 		this.attachments.forEach((item) => {
 			window.URL.revokeObjectURL(item);
 		});
+		clearInterval(this.state.interval);
 	}
-
 
 	onSendClick() {
 		const { messages, value } = this.state;
 		const time = Chat.setTime();
 		if (this.state.value !== '') {
-			this.setState({ messages: [...messages, { text: this.state.value, date: time,type:'text', }]}, () =>
-				this.saveToLocalStorage(value, time),
-			);
-			this.setState({ value: '' }, Chat.scrollTop);
-		}
-	}
-
-
-	onSendAudio(message) {
-		const { messages } = this.state;
-		if (message) {
-			this.setState({ messages: [...messages, message]}, Chat.scrollTop);
-			this.attachments.push(message.text);
-			const data = new FormData();
-			if (message.type === 'audio') {
-				data.append('audio', message.text);
-				fetch('https://tt-front.now.sh/upload', {
+			if(this.chatId !== 'group') {
+				this.setState({ messages: [...messages, { text: this.state.value, date: time, type:'text', }]}, () =>
+					this.saveToLocalStorage(value, time),
+				);
+				this.setState({ value: '' }, Chat.scrollTop);
+			} else {
+				const data = new FormData();
+				data.append('chatId', 21);
+				data.append('content', this.state.value);
+				
+				fetch(`http://localhost:8000/chats/${this.id}/newmessage/`, {
 					method: 'POST',
 					body: data,
-				}).then((response) => {console.log(response);});
+				})
+					.then(res => console.log(res))
+					.catch(err => console.log(err));
 			}
 		}
 	}
 
+	onSendAudioandImage(message) {
+		let { messages } = this.state;
+		if (message) {
+			messages = messages.concat(message);
+			this.setState({ messages }, Chat.scrollTop);
+			for (let i = 0; i < message.length; i+=1) {
+				this.attachments.push(message[i].text);
+				const data = new FormData();
+				if (message[i].type === 'audio') {
+					data.append('audio', message[i].text);
+					fetch('https://tt-front.now.sh/upload', {
+						method: 'POST',
+						body: data,
+					}).then((response) => {console.log(response);});
+				} else {
+					data.append('image', message[i].text);
+					fetch('https://tt-front.now.sh/upload', {
+						method: 'POST',
+						body: data,
+					}).then((response) => {console.log(response);});
+				}
+			}
+		}
+	}
+
+	getMessages(data){
+		let { messages } = this.state;
+		const message = [];
+		data.forEach((item) => {
+			message.push({text: item.text, date: item.time, type: 'text', user: item.user, });
+		});
+		messages = messages.concat(message);
+		
+		this.setState({messages}, Chat.scrollTop);
+	}
+
+	pollItems = () => {
+		fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21&new=yes`)
+			.then(resp => resp.json())
+			.then(data => this.getMessages(data));
+	}
 
 	changeText(text) {
 		this.setState({ value: text });
 	}
-
 
 	saveToLocalStorage(message, time) {
 		const obj = JSON.parse(localStorage.getItem(`${this.chatId}`));
@@ -354,7 +430,6 @@ export class Chat extends React.Component {
 		obj.mes.push({message, time, type: 'text'});
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(obj));
 	}
-
 
 	dragDrop(event) {
 		event.preventDefault();
@@ -364,9 +439,7 @@ export class Chat extends React.Component {
 		this.fileChange(files);
 	}
 
-
 	fileChange(files) {
-		let { messages } = this.state;
 		const message = [];
 		const images = [];
 		if(files) {
@@ -375,16 +448,8 @@ export class Chat extends React.Component {
 				const time =Chat.setTime();
 				images.push(value);
 				message.push({text: value, date: time, type: 'img'});
-				const data = new FormData();
-				data.append('image', files[i]);
-				fetch('https://tt-front.now.sh/upload', {
-					method: 'POST',
-					body: data,
-				}).then((response) => {console.log(response);});
 			}
-			messages = messages.concat(message);
-			this.setState({ messages }, Chat.scrollTop);
-			this.attachments= this.attachments.concat(images);
+			this.onSendAudioandImage(message);
 		}
 	}
 
@@ -405,7 +470,7 @@ export class Chat extends React.Component {
 					>
 						{messages.map((message, index) => {
 							if (message.type === 'text') {
-								return <Message key={index} text={message.text} Date={message.date} />;
+								return <Message key={index} text={message.text} Date={message.date} user={message.user}/>;
 							} 
 							if (message.type === 'img') {
 								return <ImageMessage key={index} img={message.text} Date={message.date}/>;
@@ -424,7 +489,7 @@ export class Chat extends React.Component {
 							textevent={this.changeText}
 							onEnter={this.onSendClick}
 						/>
-						<RightButtons send={this.onSendClick} audio={this.onSendAudio}/>
+						<RightButtons send={this.onSendClick} audio={this.onSendAudioandImage}/>
 					</div>
 				</form>
 			</React.Fragment>

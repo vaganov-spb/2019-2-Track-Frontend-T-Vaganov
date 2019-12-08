@@ -59,7 +59,7 @@ export function ChatPreview(props) {
 	let lastMes = '';
 	let time = '';
 	let src = '';
-	if (chat.mes.length) {
+	if (chat.mes && chat.mes.length > 0 ) {
 		lastMes = chat.mes[chat.mes.length - 1].message;
 		time = chat.mes[chat.mes.length - 1].time;
 	}
