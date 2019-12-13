@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { Chat } from './MessageForm';
 import messageStyles from '../styles/MessageForm.module.css';
