@@ -1,245 +1,12 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/media-has-caption */
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import moment from 'moment-timezone';
 import { history } from '../routes/index';
 import messageStyles from '../styles/MessageForm.module.css';
-import { HeaderTop } from './ChatList';
-import formStyles from '../styles/FormInput.module.css';
-import ruleStyles from '../styles/MessageRule.module.css';
-import headStyles from '../styles/ChatHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-
-
-export function ArrowLeft(props) {
-	return (
-		<div className={headStyles.arrow}>
-			<span className={headStyles.left_icon}>
-				{props.children}
-			</span>
-		</div>
-	);
-}
-
-export function HeaderChat(props) {
-	return (
-		<div className={headStyles.main_head}>
-			<HeaderTop />
-			<div className={headStyles.message_header_bottom}>
-				<ArrowLeft>
-					<Link style={{color: 'var(--white)',}} to="/">
-						<i className="fa fa-arrow-left"/>
-					</Link>
-				</ArrowLeft>
-				<div className={headStyles.message_header_img}>
-					<img className={headStyles.avatar} alt="" src={props.url} />
-				</div>
-
-				<div className={headStyles.username}>
-					<span className={headStyles.user}>{props.name}</span>
-					<p className={headStyles.online}>в сети 2 часа назад</p>
-				</div>
-				<div className={headStyles.search_icons}>
-					<span className={headStyles.right_icons}>
-						<i className="fa fa-search" />
-					</span>
-					<span className={headStyles.right_icons}>
-						<i className="fa fa-ellipsis-v" />
-					</span>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-export function Message(props) {
-	const value = props.text;
-	let content = props.text;
-	if(value.startsWith('http')) {
-		content = <a href={value}> {value}</a>;
-	} 
-	return (
-		<div className={ruleStyles.message}>
-			<div className={[ruleStyles.textMs, ruleStyles.text].join(' ')}>
-				{content}
-			</div>
-			<div className={[ruleStyles.textMs, ruleStyles.rightText].join(' ')}>{props.Date} from {props.user}</div>
-		</div>
-	);
-}
-
-export function ImageMessage(props){
-	const img = props.img;
-	const date = props.Date;
-	return (
-		<div className={ruleStyles.imagewrap}>
-			<img className={ruleStyles.image} src={img} alt=''/>
-			<div className={ruleStyles.date}>{date}</div>
-		</div>
-	);
-}
-
-export function VoiceMessage(props) {
-	return(
-		<audio className={ruleStyles.audio} controls="controls">
-			<source src={props.audio} />
-		</audio> 
-	);
-}
-
-export function RightButtons(props) {
-	const [isRecording, setRecordState] = useState(false);
-	const [chunks, setChunks] = useState([]);
-	const [recorder, setRecorder] = useState(null);
-	const [stream, setStream] = useState(null);
-
-	async function onAudio(){
-		try {
-			if (!isRecording) {
-				const streaming = await navigator.mediaDevices.getUserMedia({
-					audio: true,
-					video: false
-				});
-				setStream(streaming);
-				const mimeType = 'audio/webm';
-				const audio =  new MediaRecorder(streaming, { type: mimeType });
-				audio.addEventListener('dataavailable', (event) => {
-					if (event.data.size > 0) {
-						setChunks([...chunks, event.data]);
-					}
-				});
-				audio.start();
-				setRecorder(audio);
-				setRecordState(true);
-			} else {
-				setRecordState(false);
-				recorder.stop();
-				const track = stream.getTracks()[0];
-				track.stop();
-			}
-		} catch {
-			console.log('You denied access to the microphone.');
-		}
-	} 
-
-	function Send() {
-		props.send();
-	}
-
-	useEffect(() => {
-		const mimeType = 'audio/webm';
-		if (!isRecording && chunks.length > 0) {
-			const blob = new Blob(chunks, { type: mimeType });
-			const blobUrl = window.URL.createObjectURL(blob);
-			const time = Chat.setTime();
-			props.audio([{ text: blobUrl, date: time, type: 'audio' }]);
-			setChunks([]);
-		}
-	}, [chunks, isRecording]);
-
-	return(
-		<React.Fragment>
-			<img
-				className={messageStyles.image}
-				src="https://cdn3.iconfinder.com/data/icons/faticons/32/send-01-512.png"
-				alt=""
-				onClick={Send}
-			/>
-			<img
-				className={messageStyles.image}
-				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsxjWUIon_ELBJrEW9VYKM_OX6OHJcSVuOO7_6S_F0KGbDNmHT8w&s"alt=""
-				onClick={onAudio}
-			/>
-		</React.Fragment>
-	);
-}
-
-export function Input(props) {
-	function onKeyPress(event) {
-		if (event.key === 'Enter') {
-			props.onEnter();
-			props.textevent('');
-			event.preventDefault();
-		}
-	}
-
-	function handleChange(event) {
-		props.textevent(event.target.value);
-	}
-	return (
-		<input
-			className={formStyles.form}
-			type="text"
-			value={props.value}
-			placeholder="Cooбщение"
-			onChange={handleChange}
-			onKeyPress={onKeyPress}
-		/>
-	);
-}
-
-
-export function LeftButtons(props){
-	const myRef = React.createRef();
-
-	function fileUpload(event) {
-		const uploadfile = myRef.current;
-		uploadfile.click();
-		event.preventDefault();
-	}
-
-	function fileTransfer(event){
-		props.fileChange(event.target.files);
-	}
-
-
-	function onGeo() {
-		const options = {
-			enableHighAccuracy: true,
-			timeout: 5000,
-			maximumAge: 0
-		};
-			
-		const success = (pos) => {
-			const crd = pos.coords;
-			props.change(`https://www.openstreetmap.org/#map=18/${crd.latitude}/${crd.longitude}`);
-			props.send();
-		};
-		
-		const error = (err) => {
-			alert('Не удалось отправить геопозицию');
-		};
-
-		navigator.geolocation.getCurrentPosition(success, error, options);
-	
-	}
-
-	return(
-		<React.Fragment>
-			<input 
-				type="file" 
-				ref={myRef} 
-				accept="image/*" 
-				capture style={{display: 'None',}} 
-				multiple onChange={fileTransfer}
-			/>
-			<img
-				className={messageStyles.image}
-				src="https://cdn1.iconfinder.com/data/icons/social-17/48/photos2-512.png"
-				alt=""
-				onClick={fileUpload}
-			/>
-			<img
-				className={messageStyles.image}
-				src="https://i.pinimg.com/originals/9c/91/98/9c919823b4cac48bec5af1f236a39efd.png"
-				alt=""
-				onClick={onGeo}
-			/>
-		</React.Fragment>
-	);
-}
+import { RightButtons, LeftButtons, Input } from './ButtonsChat';
+import { ImageMessage, VoiceMessage, Message }from './Messages';
+import { HeaderChat }from './ChatHeaderInfo';
 
 export class Chat extends React.Component {
 
@@ -372,7 +139,7 @@ export class Chat extends React.Component {
 					method: 'POST',
 					body: data,
 				})
-					.then(res => console.log(res))
+					.then(res => { console.log(res); this.setState({ value: '' }, Chat.scrollTop); })
 					.catch(err => console.log(err));
 			}
 		}
@@ -404,14 +171,19 @@ export class Chat extends React.Component {
 	}
 
 	getMessages(data){
+		let time = null;
 		let { messages } = this.state;
 		const message = [];
-		data.forEach((item) => {
-			message.push({text: item.text, date: item.time, type: 'text', user: item.user, });
-		});
-		messages = messages.concat(message);
-		
-		this.setState({messages}, Chat.scrollTop);
+		if (data.length) {
+			data.forEach((item) => {
+				time = moment(item.time).tz('Europe/Moscow').format('HH:mm');
+				console.log(time);
+				message.push({text: item.text, date: time, type: 'text', user: item.user,});
+			});
+			messages = messages.concat(message);
+			
+			this.setState({messages}, Chat.scrollTop);
+		}
 	}
 
 	pollItems = () => {
