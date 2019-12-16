@@ -1,43 +1,11 @@
 /* eslint-disable react/no-unused-state */
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { UserContext, UserProvider,  ProfileContext, ProfileProvider } from './UserContext';
-import { HeaderTop } from './ChatList';
-import { ArrowLeft } from './MessageForm';
-import headerStyles from '../styles/ProfileHeader.module.css';
+import { UserContext, UserProvider, ProfileProvider } from './UserContext';
+import { NameAndBioBox } from './UserInfoFields';
+import { ProfileHeader } from './ProfileHeader';
 import infoStyles from '../styles/ProfileInfo.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-
-
-export function ProfileHeader(props) {
-	const user = useContext(UserContext);
-
-	function SaveToLS() {
-		localStorage.setItem('profile', JSON.stringify(user));
-	}
-	
-	return (
-		<div className={headerStyles.main_head}>
-			<HeaderTop/>
-			<div className={headerStyles.message_header_bottom}>
-				<ArrowLeft>
-					<Link style={{color: 'var(--white)',}} to="/">
-						<i className="fa fa-arrow-left" />
-					</Link>
-				</ArrowLeft>
-				<div className={headerStyles.center}>
-					<span className={headerStyles.edit_profile}>
-                        Edit Profile
-					</span>
-				</div>     
-				<div className={headerStyles.mark}>
-					<img className={headerStyles.mark_img} onClick={SaveToLS}src="https://icon-library.net/images/check-icon-png/check-icon-png-13.jpg" alt=""/>
-				</div>  
-			</div>
-		</div>
-	);
-}
 
 export function Info(props) {
 	const user = useContext(UserContext);
@@ -50,67 +18,6 @@ export function Info(props) {
 				</div>
 			</div>
 			<NameAndBioBox/>
-		</div>
-	);
-}
-
-export function PersonalFields(props) {
-	const change = useContext(ProfileContext);
-
-	function onKeyPress(event) {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-		}
-	}
-
-	function onChange(event, name) {
-		change(event.target.value, name);
-	}
-	return (
-		<div className={infoStyles.wrapper}>
-			<div className={infoStyles.field_name}> {props.name} </div>
-			<textarea 
-				className={infoStyles.name} 
-				onKeyPress={onKeyPress} 
-				onChange={(e) => onChange(e, props.name)} 
-				placeholder={props.placeholder} 
-				minLength="5" 
-				maxLength={props.maxlen}
-				rows={props.row}
-				value={props.usr}
-			/>
-			<div className={infoStyles.userlen}> {props.description} </div>
-		</div>
-	);
-}
-
-export function NameAndBioBox(props) {
-	const user = useContext(UserContext);
-
-	return (
-		<div className={infoStyles.user_fields}>
-			<PersonalFields 
-				name="Full name" 
-				placeholder="Enter your name!" 
-				usr={user.name}
-				row='1'
-				maxlen='25'
-			/>
-			<PersonalFields 
-				name="Username" 
-				placeholder="Enter your username!" 
-				usr={user.nick}
-				description="Minimum lenght is 5 characters"
-				row='1'
-				maxlen='25'
-			/>
-			<PersonalFields 
-				name="Bio" 
-				usr={user.bio}
-				description="Any details about you"
-				row='3'
-				maxlen='75'
-			/>
 		</div>
 	);
 }
