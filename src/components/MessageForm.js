@@ -60,7 +60,7 @@ export class Chat extends React.Component {
 		this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		let { interval } = this.state;
 		const messages = [];
 		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
@@ -102,14 +102,11 @@ export class Chat extends React.Component {
 				})
 				.catch(err => console.log(err));
 		}
-	}
-
-	componentDidMount() {
 		if (this.chatId !== 'group') {
 			if (this.state.messages.length){
-				const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
+				const data = JSON.parse(localStorage.getItem(`${this.chatId}`));
 				Data.flag = true;
-				localStorage.setItem(`${this.chatId}`, JSON.stringify(Data));
+				localStorage.setItem(`${this.chatId}`, JSON.stringify(data));
 			}
 		}
 	}
