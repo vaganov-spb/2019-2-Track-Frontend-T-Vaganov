@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HeaderTop } from './ListOfChatsHeader';
-import headStyles from '../styles/ChatHeader.module.css';
+import { connect } from 'react-redux';
+import { HeaderTop } from '../chatslist/ListOfChatsHeader';
+import headStyles from '../../styles/ChatHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -15,7 +16,7 @@ export function ArrowLeft(props) {
 	);
 }
 
-export function HeaderChat(props) {
+function HeaderChat(props) {
 	return (
 		<div className={headStyles.main_head}>
 			<HeaderTop />
@@ -26,7 +27,7 @@ export function HeaderChat(props) {
 					</Link>
 				</ArrowLeft>
 				<div className={headStyles.message_header_img}>
-					<img className={headStyles.avatar} alt="" src={props.url} />
+					<img className={headStyles.avatar} alt="" src={props.src} />
 				</div>
 
 				<div className={headStyles.username}>
@@ -45,3 +46,19 @@ export function HeaderChat(props) {
 		</div>
 	);
 }
+
+
+const mapStateToProps = (state, ownProps) => {
+	const chatId = ownProps.chatId;
+	const obj = {
+		chatId,
+		name: state.chats.chats[chatId].name,
+		src: state.chats.chats[chatId].url,
+		isLoaded: state.chats.isLoaded,
+		error: state.chats.error,
+	};
+
+	return obj;
+};
+
+export default connect(mapStateToProps)(HeaderChat);

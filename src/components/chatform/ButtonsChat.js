@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { Chat } from './MessageForm';
-import messageStyles from '../styles/MessageForm.module.css';
-import formStyles from '../styles/FormInput.module.css';
+import { connect } from 'react-redux';
+import Chat from './MessageForm';
+import messageStyles from '../../styles/MessageForm.module.css';
+import { getMessagesSuccess, clearMessageInputValue } from '../../actions';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-export function RightButtons(props) {
+function RightButtons(props) {
 	const [isRecording, setRecordState] = useState(false);
 	const [chunks, setChunks] = useState([]);
 	const [recorder, setRecorder] = useState(null);
@@ -42,7 +43,10 @@ export function RightButtons(props) {
 	} 
 
 	function Send() {
-		props.send();
+		if (props.canSend) {
+			props.addMessages([{message: `${props.currentText}`, type: 'text', time: `${Chat.setTime()}`}], props.chatId);
+			props.clearInput(props.chatId);
+		}
 	}
 
 	useEffect(() => {
@@ -72,31 +76,6 @@ export function RightButtons(props) {
 		</React.Fragment>
 	);
 }
-
-export function Input(props) {
-	function onKeyPress(event) {
-		if (event.key === 'Enter') {
-			props.onEnter();
-			props.textevent('');
-			event.preventDefault();
-		}
-	}
-
-	function handleChange(event) {
-		props.textevent(event.target.value);
-	}
-	return (
-		<input
-			className={formStyles.form}
-			type="text"
-			value={props.value}
-			placeholder="Cooбщение"
-			onChange={handleChange}
-			onKeyPress={onKeyPress}
-		/>
-	);
-}
-
 
 export function LeftButtons(props){
 	const myRef = React.createRef();
@@ -157,3 +136,17 @@ export function LeftButtons(props){
 		</React.Fragment>
 	);
 }
+
+const mapStateToProps = (state, ownProps) => {
+	return {
+		currentText: state.currentInputText[ownProps.chatId].text,
+		canSend: state.currentInputText[ownProps.chatId].flag,
+	};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+	addMessages: (message, chatId) => dispatch(getMessagesSuccess(message, chatId)),
+	clearInput: (chatId) => dispatch(clearMessageInputValue(chatId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RightButtons);
