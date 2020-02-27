@@ -7,7 +7,7 @@ import 'font-awesome/css/font-awesome.min.css';
 export function Message(props) {
 	const value = props.text;
 	let content = props.text;
-	if(value.startsWith('http')) {
+	if(value && value.startsWith('http')) {
 		content = <a href={value}> {value}</a>;
 	} 
 	return (
