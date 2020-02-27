@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import configureStore from 'redux-mock-store';
-import Input from '../components/chatform/customInputField';
+import Input from '../components/chatform/Input';
 
 const mockStore = configureStore();
 

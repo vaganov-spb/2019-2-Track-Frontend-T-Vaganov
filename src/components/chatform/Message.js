@@ -19,22 +19,3 @@ export function Message(props) {
 		</div>
 	);
 }
-
-export function ImageMessage(props){
-	const img = props.img;
-	const date = props.Date;
-	return (
-		<div className={ruleStyles.imagewrap}>
-			<img className={ruleStyles.image} src={img} alt=''/>
-			<div className={ruleStyles.date}>{date}</div>
-		</div>
-	);
-}
-
-export function VoiceMessage(props) {
-	return(
-		<audio className={ruleStyles.audio} controls="controls">
-			<source src={props.audio} />
-		</audio> 
-	);
-}

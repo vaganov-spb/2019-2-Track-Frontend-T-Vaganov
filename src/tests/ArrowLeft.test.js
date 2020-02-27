@@ -2,7 +2,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
-import { ArrowLeft } from '../components/chatform/ChatHeaderInfo';
+import { ArrowLeft } from '../components/chatform/ArrowLeft';
 
 describe('ArrowLeft renders and act correctly', () => {
 	let props;

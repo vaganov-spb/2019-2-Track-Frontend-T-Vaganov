@@ -2,8 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { HeaderTop } from '../chatslist/ListOfChatsHeader';
-import { ArrowLeft } from '../chatform/ChatHeaderInfo';
+import { HeaderTop } from '../chatslist/HeaderTop';
+import { ArrowLeft } from '../chatform/ArrowLeft';
 import headerStyles from '../../styles/ProfileHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';

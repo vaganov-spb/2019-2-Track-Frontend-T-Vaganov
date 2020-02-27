@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import configureStore from 'redux-mock-store';
-import Info from '../components/userpage/ProfileInfo';
+import Info from '../components/userpage/Info';
 
 const mockStore = configureStore();
 

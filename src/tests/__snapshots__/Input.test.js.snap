@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`customInputFields renders and act correctly should render normally 1`] = `
+<input
+  className="form"
+  onChange={[Function]}
+  onKeyPress={[Function]}
+  placeholder="Cooбщение"
+  type="text"
+  value="test_text"
+/>
+`;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ChatPreview } from './ChatPreview';
-import { HeaderChatList } from './ListOfChatsHeader';
-import listStyles from '../../styles/ChatList.module.css';
+import { ChatPreview } from '../components/chatslist/ChatPreview';
+import { HeaderChatList } from '../components/chatslist/HeaderChatList';
+import listStyles from '../styles/ChatList.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import { getChatsSuccess } from '../../actions';
+import { getChatsSuccess } from '../actions';
 
 
 class ChatList extends React.Component {

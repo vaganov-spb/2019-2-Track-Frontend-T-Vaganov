@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Chat from './MessageForm';
+import { setTime } from '../../utils';
 import { getMessagesSuccess, changeMessageInputValue, clearMessageInputValue } from '../../actions';
 import formStyles from '../../styles/FormInput.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,7 +9,7 @@ import 'font-awesome/css/font-awesome.min.css';
 function Input (props){
 	function onKeyPress(event) {
 		if (event.key === 'Enter' && props.canSend) {
-			props.addMessages([{message: `${props.currentText}`, type: 'text', time: `${Chat.setTime()}`}], props.chatId);
+			props.addMessages([{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}], props.chatId);
 			props.clearInput(props.chatId);
 			event.preventDefault();
 		} else if (event.key === 'Enter') {

@@ -1,7 +1,7 @@
 import React from 'react';  
 import renderer from 'react-test-renderer'; 
 import { MemoryRouter } from 'react-router-dom';
-import { HeaderChatList } from '../components/chatslist/ListOfChatsHeader';  
+import { HeaderChatList } from '../components/chatslist/HeaderChatList';  
 
 
 it('HeaderChatList renders correctly', () => {

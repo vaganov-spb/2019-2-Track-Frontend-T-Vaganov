@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PersonalFields from './UserInfoFields';
+import PersonalFields from './PersonalFields';
 import infoStyles from '../../styles/ProfileInfo.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 function NameAndBioBox(props) {
 	if (!props.isLoaded) {
-		return <div />;
+		return null;
 	}
 
 	return (

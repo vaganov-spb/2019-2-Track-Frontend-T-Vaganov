@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';  
 import renderer from 'react-test-renderer'; 
-import { Message } from '../components/chatform/Messages';  
+import { Message } from '../components/chatform/Message';  
 
 
 describe('Message renders and act correctly', () => {

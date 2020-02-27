@@ -1,40 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
-import messageStyles from '../../styles/MessageForm.module.css';
-import { getMessagesSuccess, clearMessageInputValue } from '../../actions/index';
+import messageStyles from '../styles/MessageForm.module.css';
+import { getMessagesSuccess, clearMessageInputValue } from '../actions/index';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import RightButtons, { LeftButtons } from './ButtonsChat';
-import Input from './customInputField';
-import { ImageMessage, VoiceMessage, Message } from './Messages';
-import HeaderChat from './ChatHeaderInfo';
+import  { LeftButtons } from '../components/chatform/LeftButtons';
+import RightButtons from '../components/chatform/RightButtons';
+import Input from '../components/chatform/Input';
+import { setTime, scrollTop, preventDefaults } from '../utils';
+import { Message } from '../components/chatform/Message';
+import { ImageMessage } from '../components/chatform/ImageMessage';
+import { VoiceMessage } from '../components/chatform/VoiceMessage';
+import HeaderChat from '../components/chatform/HeaderChat';
 
 
 class Chat extends React.Component {
-
-	static scrollTop() {
-		const windowSize = document.getElementById('result');
-		windowSize.scrollTop = windowSize.scrollHeight - 400;
-	}
-
-	static preventDefaults(e){
-		e.preventDefault();
-		e.stopPropagation();
-	}
-
-	static setTime() {
-		const time = new Date();
-		let hours = time.getHours();
-		let minutes = time.getMinutes();
-		if (Number(time.getMinutes()) < 10) {
-			minutes = `0${String(time.getMinutes())}`;
-		}
-		if (time.getHours() < 10) {
-			hours = `0${time.getHours()}`;
-		}
-		return `${hours}:${minutes}`;
-	}
 
 	constructor(props) {
 		super(props);
@@ -55,9 +36,11 @@ class Chat extends React.Component {
 	}
 
 	componentDidMount() {
-		const Data = JSON.parse(localStorage.getItem(this.props.chatId));
-		this.props.addMessages(Data.mes, this.props.chatId);
-		this.props.fillInput(this.props.chatId);
+		const {addMessages, fillInput, chatId} = this.props;
+		const Data = JSON.parse(localStorage.getItem(chatId));
+
+		addMessages(Data.mes, chatId);
+		fillInput(chatId);
 		/*
 		this.setState({ name: Data.name, url: Data.url });
 		if (this.chatId !== 'group') {
@@ -116,13 +99,14 @@ class Chat extends React.Component {
 
 	onSendClick() {
 		const { messages, value } = this.state;
-		const time = Chat.setTime();
+		const time = setTime();
+		
 		if (this.state.value !== '') {
 			if(this.chatId !== 'group') {
 				this.setState({ messages: [...messages, { text: this.state.value, date: time, type:'text', }]}, () =>
 					this.saveToLocalStorage(value, time),
 				);
-				this.setState({ value: '' }, Chat.scrollTop);
+				this.setState({ value: '' }, scrollTop);
 			} else {
 				const data = new FormData();
 				data.append('chatId', 21);
@@ -132,7 +116,7 @@ class Chat extends React.Component {
 					method: 'POST',
 					body: data,
 				})
-					.then(res => { console.log(res); this.setState({ value: '' }, Chat.scrollTop); })
+					.then(res => { console.log(res); this.setState({ value: '' }, scrollTop); })
 					.catch(err => console.log(err));
 			}
 		}
@@ -175,7 +159,7 @@ class Chat extends React.Component {
 			});
 			messages = messages.concat(message);
 			
-			this.setState({messages}, Chat.scrollTop);
+			this.setState({messages}, scrollTop);
 		}
 	}
 
@@ -231,10 +215,10 @@ class Chat extends React.Component {
 					<div
 						className={messageStyles.result}
 						id="result"
-						onDrop={Chat.preventDefaults} // onDrop={this.dragDrop}
-						onDragLeave={Chat.preventDefaults}
-						onDragOver={Chat.preventDefaults}
-						onDragEnter={Chat.preventDefaults}
+						onDrop={preventDefaults} // onDrop={this.dragDrop}
+						onDragLeave={preventDefaults}
+						onDragOver={preventDefaults}
+						onDragEnter={preventDefaults}
 					>
 						{this.props.messages.map((message, index) => {
 							if (message.type === 'text') {
@@ -253,7 +237,7 @@ class Chat extends React.Component {
 						<LeftButtons /* change={this.changeText}  send={this.onSendClick} */ fileChange={this.fileChange}/>
 						<Input
 							className={messageStyles.forminput}
-							value={this.currentText}
+							// value={this.currentText}
 							chatId={this.props.chatId}
 							// textevent={this.changeText}
 							// onEnter={this.onSendClick}
@@ -285,6 +269,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);
-
-
-

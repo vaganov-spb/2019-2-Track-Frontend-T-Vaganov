@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { Router , Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import styled from '@emotion/styled';
-import Chat from '../components/chatform/MessageForm';
-import ChatList from '../components/chatslist/ChatList';
-import { Fill } from '../components/LocalStorageFill';
-import Profile from '../components/userpage/Profile';
+import Chat from '../pages/Chat';
+import ChatList from '../pages/ChatList';
+import { Fill } from '../utils/LocalStorageFill';
+import Profile from '../pages/Profile';
 
 const Container = styled.div`
   display: flex;

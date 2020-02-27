@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import Chat from './MessageForm';
+import { setTime } from '../../utils';
 import messageStyles from '../../styles/MessageForm.module.css';
 import { getMessagesSuccess, clearMessageInputValue } from '../../actions';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -44,7 +44,7 @@ function RightButtons(props) {
 
 	function Send() {
 		if (props.canSend) {
-			props.addMessages([{message: `${props.currentText}`, type: 'text', time: `${Chat.setTime()}`}], props.chatId);
+			props.addMessages([{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}], props.chatId);
 			props.clearInput(props.chatId);
 		}
 	}
@@ -54,7 +54,7 @@ function RightButtons(props) {
 		if (!isRecording && chunks.length > 0) {
 			const blob = new Blob(chunks, { type: mimeType });
 			const blobUrl = window.URL.createObjectURL(blob);
-			const time = Chat.setTime();
+			const time = setTime();
 			props.audio([{ text: blobUrl, date: time, type: 'audio' }]);
 			setChunks([]);
 		}
@@ -72,66 +72,6 @@ function RightButtons(props) {
 				className={messageStyles.image}
 				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsxjWUIon_ELBJrEW9VYKM_OX6OHJcSVuOO7_6S_F0KGbDNmHT8w&s"alt=""
 				onClick={onAudio}
-			/>
-		</React.Fragment>
-	);
-}
-
-export function LeftButtons(props){
-	const myRef = React.createRef();
-
-	function fileUpload(event) {
-		const uploadfile = myRef.current;
-		uploadfile.click();
-		event.preventDefault();
-	}
-
-	function fileTransfer(event){
-		props.fileChange(event.target.files);
-	}
-
-
-	function onGeo() {
-		const options = {
-			enableHighAccuracy: true,
-			timeout: 5000,
-			maximumAge: 0
-		};
-			
-		const success = (pos) => {
-			const crd = pos.coords;
-			props.change(`https://www.openstreetmap.org/#map=18/${crd.latitude}/${crd.longitude}`);
-			props.send();
-		};
-		
-		const error = (err) => {
-			alert('Не удалось отправить геопозицию');
-		};
-
-		navigator.geolocation.getCurrentPosition(success, error, options);
-	
-	}
-
-	return(
-		<React.Fragment>
-			<input 
-				type="file" 
-				ref={myRef} 
-				accept="image/*" 
-				capture style={{display: 'None',}} 
-				multiple onChange={fileTransfer}
-			/>
-			<img
-				className={messageStyles.image}
-				src="https://cdn1.iconfinder.com/data/icons/social-17/48/photos2-512.png"
-				alt=""
-				onClick={fileUpload}
-			/>
-			<img
-				className={messageStyles.image}
-				src="https://i.pinimg.com/originals/9c/91/98/9c919823b4cac48bec5af1f236a39efd.png"
-				alt=""
-				onClick={onGeo}
 			/>
 		</React.Fragment>
 	);

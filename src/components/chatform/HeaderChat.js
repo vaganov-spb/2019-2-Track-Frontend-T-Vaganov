@@ -1,20 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { HeaderTop } from '../chatslist/ListOfChatsHeader';
+import { HeaderTop } from '../chatslist/HeaderTop';
+import { ArrowLeft } from './ArrowLeft';
 import headStyles from '../../styles/ChatHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-
-export function ArrowLeft(props) {
-	return (
-		<div className={headStyles.arrow}>
-			<span className={headStyles.left_icon}>
-				{props.children}
-			</span>
-		</div>
-	);
-}
 
 function HeaderChat(props) {
 	return (

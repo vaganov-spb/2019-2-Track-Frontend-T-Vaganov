@@ -1,11 +1,11 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react';
 import { connect } from 'react-redux';
-import Info from './ProfileInfo';
-import ProfileHeader from './ProfileHeader';
+import Info from '../components/userpage/Info';
+import ProfileHeader from '../components/userpage/ProfileHeader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import { userInfoSuccess } from '../../actions/index';
+import { userInfoSuccess } from '../actions/index';
 
 
 class Profile extends React.Component {
@@ -30,7 +30,7 @@ class Profile extends React.Component {
 
 	render() {
 		if(!this.props.isLoaded ) {
-			return <div/>;
+			return null;
 		}
 		return (
 			<React.Fragment>
