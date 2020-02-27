@@ -26,7 +26,6 @@ class Profile extends React.Component {
 			Bio: profile.Bio, 
 			src: profile.src,
 		});
-		
 	}
 
 	render() {

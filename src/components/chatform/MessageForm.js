@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 import RightButtons, { LeftButtons } from './ButtonsChat';
 import Input from './customInputField';
-import { ImageMessage, VoiceMessage, Message }from './Messages';
+import { ImageMessage, VoiceMessage, Message } from './Messages';
 import HeaderChat from './ChatHeaderInfo';
 
 

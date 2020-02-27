@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChatPreview renders and act correctly should render normally 1`] = `
+<a
+  href="/chat/?chatId=1"
+  onClick={[Function]}
+  style={
+    Object {
+      "textDecoration": "none",
+    }
+  }
+>
+  <div
+    className="chat_pre"
+  >
+    <div
+      className="foto"
+    >
+      <img
+        alt=""
+        className="user_foto"
+        src="test_url"
+      />
+    </div>
+    <div
+      className="pers_info"
+    >
+      <div
+        className="user_info"
+      >
+        <div
+          className="Name"
+        >
+          <span
+            className="usr_name"
+          >
+            test_name
+          </span>
+        </div>
+        <div
+          className="last_mes"
+        >
+          <div
+            className="last_ms"
+          >
+            test_message
+          </div>
+        </div>
+      </div>
+      <div
+        className="time_check"
+      >
+        <div
+          className="Time"
+        >
+          <span
+            className="time"
+          >
+            test_time
+          </span>
+        </div>
+        <div
+          className="indicate"
+        >
+          <div
+            className="indicate_img"
+          >
+            <img
+              alt=""
+              className="indicator"
+              src="https://cdn.iconscout.com/icon/premium/png-512-thumb/double-tick-2-571364.png"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>
+`;

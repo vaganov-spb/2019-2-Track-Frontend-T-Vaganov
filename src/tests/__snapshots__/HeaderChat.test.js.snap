@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderChat renders and act correctly should render normally 1`] = `
+<div
+  className="main_head"
+>
+  <div
+    className="icons"
+  >
+    <div
+      className="top_icons"
+    >
+      <div
+        className="place_top_icons"
+      >
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-circle"
+          />
+        </span>
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-battery-three-quarters"
+          />
+        </span>
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-apple"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className="message_header_bottom"
+  >
+    <div
+      className="arrow"
+    >
+      <span
+        className="left_icon"
+      >
+        <a
+          href="/"
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "var(--white)",
+            }
+          }
+        >
+          <i
+            className="fa fa-arrow-left"
+          />
+        </a>
+      </span>
+    </div>
+    <div
+      className="message_header_img"
+    >
+      <img
+        alt=""
+        className="avatar"
+        src="test_url"
+      />
+    </div>
+    <div
+      className="username"
+    >
+      <span
+        className="user"
+      >
+        test_name
+      </span>
+      <p
+        className="online"
+      >
+        в сети 2 часа назад
+      </p>
+    </div>
+    <div
+      className="search_icons"
+    >
+      <span
+        className="right_icons"
+      >
+        <i
+          className="fa fa-search"
+        />
+      </span>
+      <span
+        className="right_icons"
+      >
+        <i
+          className="fa fa-ellipsis-v"
+        />
+      </span>
+    </div>
+  </div>
+</div>
+`;

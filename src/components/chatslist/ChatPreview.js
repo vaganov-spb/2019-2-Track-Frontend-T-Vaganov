@@ -24,7 +24,7 @@ export function ChatPreview(props) {
 
 	return (
 		<Link style={{textDecoration: 'none',}} to={{ pathname: '/chat/', search: `?chatId=${props.chat_id}`, }}>
-			<div className={previewStyles.chat_pre} /* onClick={() => props.rerender()} */>
+			<div className={previewStyles.chat_pre}>
 				<div className={previewStyles.foto}>
 					<img className={previewStyles.user_foto} alt="" src={chat.url} />
 				</div>

@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderTop renders correctly 1`] = `
+<div
+  className="icons"
+>
+  <div
+    className="top_icons"
+  >
+    <div
+      className="place_top_icons"
+    >
+      <span
+        className="fa_icons"
+      >
+        <i
+          className="fa fa-circle"
+        />
+      </span>
+      <span
+        className="fa_icons"
+      >
+        <i
+          className="fa fa-battery-three-quarters"
+        />
+      </span>
+      <span
+        className="fa_icons"
+      >
+        <i
+          className="fa fa-apple"
+        />
+      </span>
+    </div>
+  </div>
+</div>
+`;
