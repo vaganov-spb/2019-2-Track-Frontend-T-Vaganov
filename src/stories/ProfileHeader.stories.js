@@ -1,4 +1,4 @@
-/*import React from 'react';
+/* import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
@@ -22,4 +22,4 @@ export const ProfileHeaderOnClick = () => <ProfileHeader onClick={action('clicke
 
 ProfileHeaderOnClick.story = {
     name: 'OnClick ProfileHeader component',
-};*/
+}; */

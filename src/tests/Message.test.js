@@ -10,9 +10,9 @@ describe('Message renders and act correctly', () => {
 
 	beforeEach(() => {
 		props = {
-            text: 'test_text',
-            Date: 'test_Date',
-            user: 'test_user',
+			text: 'test_text',
+			Date: 'test_Date',
+			user: 'test_user',
 		};
         
 		component = renderer

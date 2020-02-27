@@ -10,35 +10,35 @@ const mockStore = configureStore();
 
 describe('HeaderChat renders and act correctly', () => {
 	let props;
-    let component;
-    let store;
+	let component;
+	let store;
 
 	beforeEach(() => {
 		props = {
 			chatId: 1,
-        };
+		};
         
-        store = mockStore({
+		store = mockStore({
+			chats: {
 				chats: {
-					chats: {
-                        1: {
-                            name: 'test_name',
-                            flag: true,
-                            url: 'test_url',
-                        }
-                    },
-                    error: null,
-                    isLoaded: true,
-				}
-			});
+					1: {
+						name: 'test_name',
+						flag: true,
+						url: 'test_url',
+					}
+				},
+				error: null,
+				isLoaded: true,
+			}
+		});
         
 		component = renderer
 			.create(
-                <Provider store={store}>
-                    <MemoryRouter>
-                        <HeaderChat { ...props } />
-                    </MemoryRouter>  
-                </Provider>
+				<Provider store={store}>
+					<MemoryRouter>
+						<HeaderChat { ...props } />
+					</MemoryRouter>  
+				</Provider>
 			)
 			.toJSON();
          
