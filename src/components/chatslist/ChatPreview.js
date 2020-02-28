@@ -9,15 +9,16 @@ export function ChatPreview(props) {
 	let src = '';
 	let lastMes = '';
 	let time = '';
-	lastMes = chat.lastMes !== undefined ? chat.lastMes.message : '';
-	time = chat.lastMes !== undefined ? chat.lastMes.time : '';
-	
-	
 
-	if (chat.flag === true) {
+	if ( chat ) {
+		lastMes = ( chat.lastMes !== undefined && chat.lastMes.message !== undefined ) ? chat.lastMes.message : '';
+		time = ( chat.lastMes !== undefined && chat.lastMes.time !== undefined ) ? chat.lastMes.time : '';
+	}
+
+	if (chat && chat.flag === true) {
 		src = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/double-tick-2-571364.png';
 	}
-	if (chat.flag === false) {
+	if (chat && chat.flag === false) {
 		src =
       'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png';
 	}
