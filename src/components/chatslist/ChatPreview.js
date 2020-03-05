@@ -10,17 +10,17 @@ export function ChatPreview(props) {
 	let lastMes = '';
 	let time = '';
 
-	if ( chat ) {
-		lastMes = ( chat.lastMes !== undefined && chat.lastMes.message !== undefined ) ? chat.lastMes.message : '';
-		time = ( chat.lastMes !== undefined && chat.lastMes.time !== undefined ) ? chat.lastMes.time : '';
+	if (chat) {
+		lastMes = (chat.lastMes && chat.lastMes.message) ? chat.lastMes.message : '';
+		time = (chat.lastMes && chat.lastMes.time) ? chat.lastMes.time : '';
 	}
 
-	if (chat && chat.flag === true) {
+	if (chat && chat.flag) {
 		src = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/double-tick-2-571364.png';
 	}
-	if (chat && chat.flag === false) {
+	if (chat && !chat.flag) {
 		src =
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png';
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png';
 	}
 
 	return (

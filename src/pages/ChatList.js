@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 import React from 'react';
 import { connect } from 'react-redux';
 import { ChatPreview } from '../components/chatslist/ChatPreview';
@@ -14,13 +15,13 @@ class ChatList extends React.Component {
 		this.loadLsData = this.loadLsData.bind(this);
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		this.loadLsData();
 	}
 
 	loadLsData() {
 		const chatsObj = {};
-		for (let i = 0; i < localStorage.length; i += 1) {
+		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
 			if (key !== 'profile' && key !== 'group'){
 				const chat = JSON.parse(localStorage.getItem(key));
@@ -31,6 +32,10 @@ class ChatList extends React.Component {
 	}
 
 	render() {
+		if(!this.props.isLoaded){
+			return null;
+		}
+
 		return (
 			<React.Fragment>
 				<HeaderChatList />

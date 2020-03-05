@@ -8,7 +8,7 @@ import 'font-awesome/css/font-awesome.min.css';
 
 function Info(props) {
 	if (!props.isLoaded) {
-		return <div />;
+		return null;
 	}
 
 	return (

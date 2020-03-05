@@ -17,7 +17,7 @@ function PersonalFields(props) {
 	}
 
 	if (!props.isLoaded) {
-		return <div/>;
+		return null;
 	}
 
 	return (
