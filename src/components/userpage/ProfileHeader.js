@@ -1,18 +1,16 @@
 /* eslint-disable react/no-unused-state */
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { UserContext } from './UserContext';
-import { HeaderTop } from './ListOfChatsHeader';
-import { ArrowLeft } from './ChatHeaderInfo';
-import headerStyles from '../styles/ProfileHeader.module.css';
+import { connect } from 'react-redux';
+import { HeaderTop } from '../chatslist/HeaderTop';
+import { ArrowLeft } from '../chatform/ArrowLeft';
+import headerStyles from '../../styles/ProfileHeader.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
-export function ProfileHeader(props) {
-	const user = useContext(UserContext);
-
+function ProfileHeader(props) {
 	function SaveToLS() {
-		localStorage.setItem('profile', JSON.stringify(user));
+		localStorage.setItem('profile', JSON.stringify(props.user));
 	}
 	
 	return (
@@ -36,3 +34,11 @@ export function ProfileHeader(props) {
 		</div>
 	);
 }
+
+const mapStateToProps = (state) => ({
+	user: state.userinfo.info,
+	error: state.userinfo.error,
+	isLoaded: state.userinfo.isLoaded,
+});
+
+export default connect(mapStateToProps)(ProfileHeader);

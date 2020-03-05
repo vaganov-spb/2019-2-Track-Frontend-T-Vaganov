@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ArrowLeft renders and act correctly should render normally 1`] = `
+<div
+  className="arrow"
+>
+  <span
+    className="left_icon"
+  >
+    <p>
+       Test 
+    </p>
+  </span>
+</div>
+`;

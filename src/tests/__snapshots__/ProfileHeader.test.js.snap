@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfileHeader renders and act correctly should render normally 1`] = `
+<div
+  className="main_head"
+>
+  <div
+    className="icons"
+  >
+    <div
+      className="top_icons"
+    >
+      <div
+        className="place_top_icons"
+      >
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-circle"
+          />
+        </span>
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-battery-three-quarters"
+          />
+        </span>
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-apple"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className="message_header_bottom"
+  >
+    <div
+      className="arrow"
+    >
+      <span
+        className="left_icon"
+      >
+        <a
+          href="/"
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "var(--white)",
+            }
+          }
+        >
+          <i
+            className="fa fa-arrow-left"
+          />
+        </a>
+      </span>
+    </div>
+    <div
+      className="center"
+    >
+      <span
+        className="edit_profile"
+      >
+        Edit Profile
+      </span>
+    </div>
+    <div
+      className="mark"
+    >
+      <img
+        alt=""
+        className="mark_img"
+        onClick={[Function]}
+        src="https://icon-library.net/images/check-icon-png/check-icon-png-13.jpg"
+      />
+    </div>
+  </div>
+</div>
+`;

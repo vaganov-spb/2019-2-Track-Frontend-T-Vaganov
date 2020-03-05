@@ -3,12 +3,10 @@ import React, { Component } from 'react';
 import { Router , Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import styled from '@emotion/styled';
-import { Chat } from '../components/MessageForm';
-import { ChatList } from '../components/ChatList';
-import { Fill } from '../components/LocalStorageFill';
-import { Profile } from '../components/Profile';
-// import CounterContainer from '../containers/CounterContainer';
-// import Header from '../components/Header';
+import Chat from '../pages/Chat';
+import ChatList from '../pages/ChatList';
+import { Fill } from '../utils/LocalStorageFill';
+import Profile from '../pages/Profile';
 
 const Container = styled.div`
   display: flex;
@@ -35,7 +33,6 @@ class Routes extends Component {
 					</Switch>
 				</Container>
 			</Router>
-			
 		);
 	}
 }

@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux';
+/* import { createStore, applyMiddleware } from 'redux';
 import ReduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from '../reducers';
@@ -17,7 +17,7 @@ export default function configureStore(initialState = {}) {
 	if (module.hot) {
 		// Enable Webpack hot module replacement for reducers
 		module.hot.accept('../reducers', () => {
-			/* eslint-disable global-require */
+			/* eslint-disable global-require 
 			const nextReducer = require('../reducers').default;
 			store.replaceReducer(nextReducer);
 		});
@@ -25,3 +25,4 @@ export default function configureStore(initialState = {}) {
 
 	return store;
 }
+*/

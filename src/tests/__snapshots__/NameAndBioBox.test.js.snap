@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NameAndBioBox renders and act correctly should render normally 1`] = `
+<div
+  className="user_fields"
+>
+  <div
+    className="wrapper"
+  >
+    <div
+      className="field_name"
+    >
+       
+      Name
+       
+    </div>
+    <textarea
+      className="name"
+      maxLength="25"
+      minLength="5"
+      onChange={[Function]}
+      onKeyPress={[Function]}
+      placeholder="Enter your name!"
+      rows="1"
+      value="Borat"
+    />
+    <div
+      className="userlen"
+    >
+       
+       
+    </div>
+  </div>
+  <div
+    className="wrapper"
+  >
+    <div
+      className="field_name"
+    >
+       
+      Nick
+       
+    </div>
+    <textarea
+      className="name"
+      maxLength="25"
+      minLength="5"
+      onChange={[Function]}
+      onKeyPress={[Function]}
+      placeholder="Enter your username!"
+      rows="1"
+      value="Sagdiev"
+    />
+    <div
+      className="userlen"
+    >
+       
+      Minimum lenght is 5 characters
+       
+    </div>
+  </div>
+  <div
+    className="wrapper"
+  >
+    <div
+      className="field_name"
+    >
+       
+      Bio
+       
+    </div>
+    <textarea
+      className="name"
+      maxLength="75"
+      minLength="5"
+      onChange={[Function]}
+      onKeyPress={[Function]}
+      rows="3"
+      value="Pasha Technik"
+    />
+    <div
+      className="userlen"
+    >
+       
+      Any details about you
+       
+    </div>
+  </div>
+</div>
+`;

@@ -1,30 +1,31 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import previewStyles from '../styles/ChatPreview.module.css';
+import previewStyles from '../../styles/ChatPreview.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 export function ChatPreview(props) {
 	const { chat } = props;
+	let src = '';
 	let lastMes = '';
 	let time = '';
-	let src = '';
-	if (chat.mes && chat.mes.length > 0 ) {
-		lastMes = chat.mes[chat.mes.length - 1].message;
-		time = chat.mes[chat.mes.length - 1].time;
+
+	if ( chat ) {
+		lastMes = ( chat.lastMes !== undefined && chat.lastMes.message !== undefined ) ? chat.lastMes.message : '';
+		time = ( chat.lastMes !== undefined && chat.lastMes.time !== undefined ) ? chat.lastMes.time : '';
 	}
 
-	if (chat.flag === true) {
+	if (chat && chat.flag === true) {
 		src = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/double-tick-2-571364.png';
 	}
-	if (chat.flag === false) {
+	if (chat && chat.flag === false) {
 		src =
       'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Google_Material_Design_check.svg/1024px-Google_Material_Design_check.svg.png';
 	}
 
 	return (
 		<Link style={{textDecoration: 'none',}} to={{ pathname: '/chat/', search: `?chatId=${props.chat_id}`, }}>
-			<div className={previewStyles.chat_pre} /* onClick={() => props.rerender()} */>
+			<div className={previewStyles.chat_pre}>
 				<div className={previewStyles.foto}>
 					<img className={previewStyles.user_foto} alt="" src={chat.url} />
 				</div>

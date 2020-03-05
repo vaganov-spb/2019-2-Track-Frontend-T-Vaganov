@@ -1,69 +1,47 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment-timezone';
-import { history } from '../routes/index';
 import messageStyles from '../styles/MessageForm.module.css';
+import { getMessagesSuccess, clearMessageInputValue } from '../actions/index';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import { RightButtons, LeftButtons, Input } from './ButtonsChat';
-import { ImageMessage, VoiceMessage, Message }from './Messages';
-import { HeaderChat }from './ChatHeaderInfo';
-
-export class Chat extends React.Component {
-
-	static scrollTop() {
-		const windowSize = document.getElementById('result');
-		windowSize.scrollTop = windowSize.scrollHeight - 400;
-	}
+import  { LeftButtons } from '../components/chatform/LeftButtons';
+import RightButtons from '../components/chatform/RightButtons';
+import Input from '../components/chatform/Input';
+import { setTime, scrollTop, preventDefaults } from '../utils';
+import { Message } from '../components/chatform/Message';
+import { ImageMessage } from '../components/chatform/ImageMessage';
+import { VoiceMessage } from '../components/chatform/VoiceMessage';
+import HeaderChat from '../components/chatform/HeaderChat';
 
 
-	static preventDefaults(e){
-		e.preventDefault();
-		e.stopPropagation();
-	}
-
-
-	static setTime() {
-		const time = new Date();
-		let hours = time.getHours();
-		let minutes = time.getMinutes();
-		if (Number(time.getMinutes()) < 10) {
-			minutes = `0${String(time.getMinutes())}`;
-		}
-		if (time.getHours() < 10) {
-			hours = `0${time.getHours()}`;
-		}
-		return `${hours}:${minutes}`;
-	}
-
+class Chat extends React.Component {
 
 	constructor(props) {
 		super(props);
-		const params = new URLSearchParams(props.location.search);
-		this.chatId = params.get('chatId');
 		this.state = {
-			messages: [],
 			value: '',
-			name: '',
-			url: '',
-			interval: null,
 		};
-		this.author = null;
-		this.id = null;
-		this.attachments= [];
-		this.pollItems = this.pollItems.bind(this);
+		// this.author = null;
+		// this.id = null;
+		// this.attachments= [];
+		// this.pollItems = this.pollItems.bind(this);
 		this.getMessages = this.getMessages.bind(this);
-		this.changeText = this.changeText.bind(this);
+		// this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
-		this.fileChange = this.fileChange.bind(this);
+		// this.fileChange = this.fileChange.bind(this);
 		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
-		this.dragDrop = this.dragDrop.bind(this);
-		this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
+		// this.dragDrop = this.dragDrop.bind(this);
+		// this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
 	}
 
 	componentDidMount() {
-		let { interval } = this.state;
-		const messages = [];
-		const Data = JSON.parse(localStorage.getItem(`${this.chatId}`));
+		const {addMessages, fillInput, chatId} = this.props;
+		const Data = JSON.parse(localStorage.getItem(chatId));
+
+		addMessages(Data.mes, chatId);
+		fillInput(chatId);
+		/*
 		this.setState({ name: Data.name, url: Data.url });
 		if (this.chatId !== 'group') {
 			if ('mes' in Data && Data.mes != null) {
@@ -108,25 +86,27 @@ export class Chat extends React.Component {
 				Data.flag = true;
 				localStorage.setItem(`${this.chatId}`, JSON.stringify(data));
 			}
-		}
+		} */
+		
 	}
 
-	componentWillUnmount(){
+	/* componentWillUnmount(){
 		this.attachments.forEach((item) => {
 			window.URL.revokeObjectURL(item);
 		});
 		clearInterval(this.state.interval);
-	}
+	} */
 
 	onSendClick() {
 		const { messages, value } = this.state;
-		const time = Chat.setTime();
+		const time = setTime();
+		
 		if (this.state.value !== '') {
 			if(this.chatId !== 'group') {
 				this.setState({ messages: [...messages, { text: this.state.value, date: time, type:'text', }]}, () =>
 					this.saveToLocalStorage(value, time),
 				);
-				this.setState({ value: '' }, Chat.scrollTop);
+				this.setState({ value: '' }, scrollTop);
 			} else {
 				const data = new FormData();
 				data.append('chatId', 21);
@@ -136,13 +116,13 @@ export class Chat extends React.Component {
 					method: 'POST',
 					body: data,
 				})
-					.then(res => { console.log(res); this.setState({ value: '' }, Chat.scrollTop); })
+					.then(res => { console.log(res); this.setState({ value: '' }, scrollTop); })
 					.catch(err => console.log(err));
 			}
 		}
 	}
 
-	onSendAudioandImage(message) {
+	/* onSendAudioandImage(message) {
 		let { messages } = this.state;
 		if (message) {
 			messages = messages.concat(message);
@@ -165,7 +145,7 @@ export class Chat extends React.Component {
 				}
 			}
 		}
-	}
+	} */
 
 	getMessages(data){
 		let time = null;
@@ -179,19 +159,19 @@ export class Chat extends React.Component {
 			});
 			messages = messages.concat(message);
 			
-			this.setState({messages}, Chat.scrollTop);
+			this.setState({messages}, scrollTop);
 		}
 	}
 
-	pollItems = () => {
+	/* pollItems = () => {
 		fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21&new=yes`)
 			.then(resp => resp.json())
 			.then(data => this.getMessages(data));
-	}
+	} 
 
 	changeText(text) {
-		this.setState({ value: text });
-	}
+		this.setState({value: text});
+	} */
 
 	saveToLocalStorage(message, time) {
 		const obj = JSON.parse(localStorage.getItem(`${this.chatId}`));
@@ -200,7 +180,7 @@ export class Chat extends React.Component {
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(obj));
 	}
 
-	dragDrop(event) {
+	/* dragDrop(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		const dt = event.dataTransfer;
@@ -214,54 +194,78 @@ export class Chat extends React.Component {
 		if(files) {
 			for(let i = 0; i < files.length; i+=1 ) {
 				const value = window.URL.createObjectURL(files[i]);
-				const time =Chat.setTime();
+				const time = Chat.setTime();
 				images.push(value);
 				message.push({text: value, date: time, type: 'img'});
 			}
+			
 			this.onSendAudioandImage(message);
 		}
-	}
-
+	} */
 
 	render() {
-		const { messages } = this.state;
+		if (!this.props.messages) {
+			return <div/>;
+		}
+
 		return (
 			<React.Fragment>
-				<HeaderChat name={this.state.name} url={this.state.url}/>
+				<HeaderChat chatId={this.props.chatId}/>
 				<form>
 					<div
 						className={messageStyles.result}
 						id="result"
-						onDrop={this.dragDrop}
-						onDragLeave={Chat.preventDefaults}
-						onDragOver={Chat.preventDefaults}
-						onDragEnter={Chat.preventDefaults}
+						onDrop={preventDefaults} // onDrop={this.dragDrop}
+						onDragLeave={preventDefaults}
+						onDragOver={preventDefaults}
+						onDragEnter={preventDefaults}
 					>
-						{messages.map((message, index) => {
+						{this.props.messages.map((message, index) => {
 							if (message.type === 'text') {
-								return <Message key={index} text={message.text} Date={message.date} user={message.user}/>;
+								return <Message key={index} text={message.message} Date={message.time}/>;
 							} 
 							if (message.type === 'img') {
-								return <ImageMessage key={index} img={message.text} Date={message.date}/>;
+								return <ImageMessage key={index} img={message.message} Date={message.time}/>;
 							}
 							if (message.type === 'audio'){
-								return <VoiceMessage key={index} audio={message.text}/>;
+								return <VoiceMessage key={index} audio={message.message}/>;
 							}
 							return <div key={index}/>;
 						})}
 					</div>
 					<div className={messageStyles.inp}>
-						<LeftButtons change={this.changeText} send={this.onSendClick} fileChange={this.fileChange}/>
+						<LeftButtons /* change={this.changeText}  send={this.onSendClick} */ fileChange={this.fileChange}/>
 						<Input
 							className={messageStyles.forminput}
-							value={this.state.value}
-							textevent={this.changeText}
-							onEnter={this.onSendClick}
+							// value={this.currentText}
+							chatId={this.props.chatId}
+							// textevent={this.changeText}
+							// onEnter={this.onSendClick}
 						/>
-						<RightButtons send={this.onSendClick} audio={this.onSendAudioandImage}/>
+						<RightButtons /* send={this.onSendClick} */ chatId={this.props.chatId} audio={this.onSendAudioandImage}/>
 					</div>
 				</form>
 			</React.Fragment>
 		);
 	}
 }
+
+const mapStateToProps = (state, ownProps) => {
+	const params = new URLSearchParams(ownProps.location.search);
+	const chatId = params.get('chatId');
+
+	const obj = {
+		chatId,
+		messages: state.messages.messages[chatId],
+		error: state.messages.errors[chatId],
+		isLoaded: state.messages.isLoaded,
+	};
+	return obj;
+};
+
+const mapDispatchToProps = (dispatch) => ({
+	addMessages: (message, chatId) => dispatch(getMessagesSuccess(message, chatId)),
+	fillInput: (chatId) => dispatch(clearMessageInputValue(chatId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

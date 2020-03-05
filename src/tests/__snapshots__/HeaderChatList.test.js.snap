@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderChatList renders correctly 1`] = `
+<div
+  className="mess_header"
+>
+  <div
+    className="icons"
+  >
+    <div
+      className="top_icons"
+    >
+      <div
+        className="place_top_icons"
+      >
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-circle"
+          />
+        </span>
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-battery-three-quarters"
+          />
+        </span>
+        <span
+          className="fa_icons"
+        >
+          <i
+            className="fa fa-apple"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className="mes_list_bottom"
+  >
+    <div
+      className="burger"
+    >
+      <div
+        className="burg_icon"
+      >
+        <a
+          href="/profile/"
+          onClick={[Function]}
+        >
+          <img
+            alt=""
+            className="br"
+            src="https://static.thenounproject.com/png/696519-200.png"
+          />
+        </a>
+      </div>
+    </div>
+    <div
+      className="written"
+    >
+      <span
+        className="Message"
+      >
+        Messenger
+      </span>
+    </div>
+    <div
+      className="search_engine"
+    >
+      <div
+        className="search_icon"
+      >
+        <span
+          className="fa_search_icon"
+        >
+          <i
+            className="fa fa-search"
+          />
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Message renders and act correctly should render normally 1`] = `
+<div
+  className="message"
+>
+  <div
+    className="textMs text"
+  >
+    test_text
+  </div>
+  <div
+    className="textMs rightText"
+  >
+    test_Date
+     from 
+    test_user
+  </div>
+</div>
+`;
