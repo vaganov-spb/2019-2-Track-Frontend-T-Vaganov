@@ -104,7 +104,7 @@
     "ci": "npm run test && npm run build && npm run test:sec",
     "test:unit": "react-scripts test",
     "storybook": "start-storybook",
-    "test:endtoend": "jest -c endtoend/jest.config.js",
+    "test:endtoend": "jest -c endtoend/jest.config.js --maxWorkers=1",
     "build-storybook": "build-storybook -s public"
   },
   "husky": {

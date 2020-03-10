@@ -14,7 +14,7 @@ class Profile extends React.Component {
 		this.loadLsData = this.loadLsData.bind(this);
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		this.loadLsData();
 	}
 
@@ -29,9 +29,10 @@ class Profile extends React.Component {
 	}
 
 	render() {
-		if(!this.props.isLoaded ) {
+		if(!this.props.isLoaded) {
 			return null;
-		}
+		} 
+
 		return (
 			<React.Fragment>
 				<ProfileHeader/>
