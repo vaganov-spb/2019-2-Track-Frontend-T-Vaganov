@@ -2,7 +2,6 @@ import expectPuppeteer from 'expect-puppeteer';
 
 describe('Send Message',() => {
 	beforeAll(async () => {
-		jest.setTimeout(10000);
 		await page.goto('http://localhost:3000');
 	});
 
