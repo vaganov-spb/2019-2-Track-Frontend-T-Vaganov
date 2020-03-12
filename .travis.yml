@@ -4,6 +4,11 @@ node_js:
 
 dist: trusty
 
+addons:
+  apt:
+    packages:
+      - libnss3
+
 cache:
   directories:
     - node_modules
