@@ -1,16 +1,16 @@
 describe('Send Message',() => {
-    beforeAll(async () => {
-      await page.goto('http://localhost:3000/');
-    })
+	beforeAll(async () => {
+		await page.goto('http://localhost:3000/');
+	});
 
-    it('should load without error', async () => {
-        await expect(page).toClick('[href="/chat/?chatId=3"]');
-        // await page.waitFor(1000);
-        await expect(page).toFill('[class="FormInput_form__2pRyv"]', 'test_message');
-        // await page.waitFor(1000);
-        await page.focus('[class="FormInput_form__2pRyv"]');
-        // await page.waitFor(1000);
-        await page.keyboard.press('Enter');
-        // await page.waitFor(1000);
-    })
-}) 
+	it('should load without error', async () => {
+		await expect(page).toClick('[href="/chat/?chatId=3"]');
+		// await page.waitFor(1000);
+		await expect(page).toFill('[class="FormInput_form__2pRyv"]', 'test_message');
+		// await page.waitFor(1000);
+		await page.focus('[class="FormInput_form__2pRyv"]');
+		// await page.waitFor(1000);
+		await page.keyboard.press('Enter');
+		// await page.waitFor(1000);
+	});
+}); 
