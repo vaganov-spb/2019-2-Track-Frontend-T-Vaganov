@@ -109,10 +109,10 @@ const storageArray = [
 		]
 	},
 	{
-		name: 'Jennyfer Eshley',
-		nick: '@tony',
+		Name: 'Jennyfer Eshley',
+		Nick: '@tony',
 		src: 'https://www.danceschool-nrw.de/wp-content/uploads/2019/05/39-512.png',
-		bio: 'I love pony!',
+		Bio: 'I love pony!',
 	},
 	{
 		name: 'Group Chat',

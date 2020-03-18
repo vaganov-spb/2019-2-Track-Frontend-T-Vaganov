@@ -28,7 +28,7 @@ function ProfileHeader(props) {
 					</span>
 				</div>     
 				<div className={headerStyles.mark}>
-					<img className={headerStyles.mark_img} onClick={SaveToLS}src="https://icon-library.net/images/check-icon-png/check-icon-png-13.jpg" alt=""/>
+					<img id="saveToLsIcon" className={headerStyles.mark_img} onClick={SaveToLS} src="https://icon-library.net/images/check-icon-png/check-icon-png-13.jpg" alt=""/>
 				</div>  
 			</div>
 		</div>

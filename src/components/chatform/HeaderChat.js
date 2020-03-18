@@ -41,15 +41,13 @@ function HeaderChat(props) {
 
 const mapStateToProps = (state, ownProps) => {
 	const chatId = ownProps.chatId;
-	const obj = {
+	return {
 		chatId,
 		name: state.chats.chats[chatId].name,
 		src: state.chats.chats[chatId].url,
 		isLoaded: state.chats.isLoaded,
 		error: state.chats.error,
 	};
-
-	return obj;
 };
 
 export default connect(mapStateToProps)(HeaderChat);

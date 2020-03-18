@@ -8,12 +8,15 @@ import 'font-awesome/css/font-awesome.min.css';
 
 function Input (props){
 	function onKeyPress(event) {
-		if (event.key === 'Enter' && props.canSend) {
-			props.addMessages([{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}], props.chatId);
-			props.clearInput(props.chatId);
+		if (event.key === 'Enter') {
 			event.preventDefault();
-		} else if (event.key === 'Enter') {
-			event.preventDefault();
+			if(props.canSend) {
+				props.addMessages(
+					[{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}],
+					props.chatId
+				);
+				props.clearInput(props.chatId);
+			}
 		}
 	}
 

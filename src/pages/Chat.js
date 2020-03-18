@@ -205,7 +205,7 @@ class Chat extends React.Component {
 
 	render() {
 		if (!this.props.messages) {
-			return <div/>;
+			return null;
 		}
 
 		return (
@@ -254,13 +254,12 @@ const mapStateToProps = (state, ownProps) => {
 	const params = new URLSearchParams(ownProps.location.search);
 	const chatId = params.get('chatId');
 
-	const obj = {
+	return {
 		chatId,
 		messages: state.messages.messages[chatId],
 		error: state.messages.errors[chatId],
 		isLoaded: state.messages.isLoaded,
 	};
-	return obj;
 };
 
 const mapDispatchToProps = (dispatch) => ({

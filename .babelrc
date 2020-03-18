@@ -11,6 +11,7 @@
         "spec": true
       }
     ],
+    "@babel/transform-runtime",
     "babel-plugin-styled-components",
     "@babel/plugin-syntax-dynamic-import"
   ]
