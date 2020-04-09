@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react';
 import { connect } from 'react-redux';
+import Peer from 'peerjs';
 import moment from 'moment-timezone';
 import messageStyles from '../styles/MessageForm.module.css';
 import { getMessagesSuccess, clearMessageInputValue } from '../actions/index';
@@ -9,7 +10,8 @@ import 'font-awesome/css/font-awesome.min.css';
 import  { LeftButtons } from '../components/chatform/LeftButtons';
 import RightButtons from '../components/chatform/RightButtons';
 import Input from '../components/chatform/Input';
-import { setTime, scrollTop, preventDefaults } from '../utils';
+import { setTime, scrollTop, preventDefaults } from '../utils/index';
+import { peerHandshake } from '../utils/PeerFuncs';
 import { Message } from '../components/chatform/Message';
 import { ImageMessage } from '../components/chatform/ImageMessage';
 import { VoiceMessage } from '../components/chatform/VoiceMessage';
@@ -25,12 +27,15 @@ class Chat extends React.Component {
 		super(props);
 		this.state = {
 			value: '',
+			centrifuge: null,
+			connection: null,
+			peer: null,
+			peer_id: null,
 		};
 		// this.author = null;
-		// this.id = null;
+		this.id = null;
 		// this.attachments= [];
 		// this.pollItems = this.pollItems.bind(this);
-		this.centrifuge = null;
 		this.getMessages = this.getMessages.bind(this);
 		// this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
@@ -40,13 +45,14 @@ class Chat extends React.Component {
 		// this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
 	}
 
+
 	componentDidMount() {
 		const {addMessages, fillInput, chatId} = this.props;
 		if(chatId !== 'Group Chat'){
 			const Data = JSON.parse(localStorage.getItem(chatId));
 			addMessages(Data.mes, chatId);
-			scrollTop();
-		} else {
+		}  
+		if (chatId === 'Group Chat'){
 			fetch('http://localhost:8000/users/1/messages/?chat_id=21')
 				.then((response) => {
 					if(response.status !== 200) {
@@ -62,32 +68,72 @@ class Chat extends React.Component {
 					console.log(err);
 				});
 			
-			this.centrifuge = new Centrifuge(CENTRIFUGE_URL);
+			const centrifuge = new Centrifuge(CENTRIFUGE_URL);
 
 			fetch('http://localhost:8000/centrifugo/?user_id=1')
 				.then(response => {
 					response.json()
 						.then(data => {
-							this.centrifuge.setToken(data.token);
-							this.centrifuge.subscribe('chat:21', function(message){
+							centrifuge.setToken(data.token);
+							centrifuge.subscribe('chat:21', function(message){
 								addMessages([message.data.message,], chatId);
 								scrollTop();
 							});
 				
-							this.centrifuge.connect();
+							centrifuge.connect();
+							this.setState({centrifuge, });
 						});
 				});
+		}
 
-			
 
-			console.log(this.centrifuge);
+		if(chatId === 'PEER JS'){
+			const id = prompt('Enter Your ID');
+			this.id = id;
+			const centrifuge = new Centrifuge(CENTRIFUGE_URL);
+			const peer =  new Peer();
+			this.setState({peer, });
+			peer.on('connection', (con) => {
+				con.on('open', () => {
+					con.on('data', (message) => {
+						addMessages([message,], chatId);
+						scrollTop();
+					});
+				});
+				this.setState({connection: con});
+			});
+
+			peer.on('open', (Id) => {
+				this.setState({peer_id: Id});
+				peerHandshake(centrifuge, id, Id)
+					.then((conn) => {
+						if (conn < Id) {
+							const connection = peer.connect(conn);
+							connection.on('open', () => {
+								connection.on('data', (message) => {
+									addMessages([message,], chatId);
+									scrollTop();
+									
+								});
+							});
+							this.setState({connection,});
+						}
+					});
+			});
+			this.setState({centrifuge, });
 		}
 		fillInput(chatId);
 	}
 
 	componentWillUnmount(){
-		this.centrifuge.disconnect();
+		if(this.props.chatId === 'Group Chat' || this.props.chatId === 'PEER JS'){
+			if(this.props.chatId === 'PEER JS'){
+				this.state.peer.destroy();
+			}
+			this.state.centrifuge.disconnect();
+		};
 	}
+
 
 	onSendClick() {
 		const { messages, value } = this.state;
@@ -114,7 +160,6 @@ class Chat extends React.Component {
 		}
 	}
 
-	/*  */
 
 	getMessages(data){
 		let time = null;
@@ -179,6 +224,7 @@ class Chat extends React.Component {
 							className={messageStyles.forminput}
 							// value={this.currentText}
 							chatId={chatId}
+							connection={this.state.connection}
 							// textevent={this.changeText}
 							// onEnter={this.onSendClick}
 						/>
