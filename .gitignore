@@ -118,6 +118,9 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
+# files with non-usable utils
+src/pages/Chat_comp_useful.js
+
 # Yarn Integrity file
 .yarn-integrity
 
@@ -146,3 +149,4 @@ flow-typed/
 docs/_book/
 jest_*/
 .jscpd/
+

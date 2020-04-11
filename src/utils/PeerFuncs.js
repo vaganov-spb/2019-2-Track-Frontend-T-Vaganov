@@ -1,7 +1,9 @@
+import { tokenUrl } from '../constants/urls';
+
 export async function peerHandshake(centrifuge, id, peerId){
 	let connectionId = null;
 	try {
-		const response = await fetch(`http://localhost:8000/centrifugo/?user_id=${id}`);
+		const response = await fetch(tokenUrl(id));
 		const data = await response.json();
 		
 		return await new Promise((resolve, reject) =>{
@@ -42,11 +44,12 @@ export async function peerHandshake(centrifuge, id, peerId){
 }
 
 
-export function peerHandshakeMessage(centrifuge, message){
-	centrifuge.publish('secret:chat', message)
-		.then((res) => {
-			console.log('successfully published');
-		}, (err) => {
-			console.log('publish error', err);
-		});
+export async function peerHandshakeMessage(centrifuge, message){
+	try{
+		await centrifuge.publish('secret:chat', message);
+		console.log('successfully published');
+	}
+	catch(err){
+		console.log('send error',err);
+	}
 }

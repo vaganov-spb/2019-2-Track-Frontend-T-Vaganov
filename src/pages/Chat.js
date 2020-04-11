@@ -16,10 +16,9 @@ import { Message } from '../components/chatform/Message';
 import { ImageMessage } from '../components/chatform/ImageMessage';
 import { VoiceMessage } from '../components/chatform/VoiceMessage';
 import HeaderChat from '../components/chatform/HeaderChat';
+import { CENTRIFUGE_URL, messageListUrl, tokenUrl } from '../constants/urls';
 
 const Centrifuge = require('centrifuge');
-
-const CENTRIFUGE_URL = 'ws://localhost:9000/connection/websocket';
 
 class Chat extends React.Component {
 
@@ -32,17 +31,11 @@ class Chat extends React.Component {
 			peer: null,
 			peer_id: null,
 		};
-		// this.author = null;
+		
 		this.id = null;
-		// this.attachments= [];
-		// this.pollItems = this.pollItems.bind(this);
 		this.getMessages = this.getMessages.bind(this);
-		// this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
-		// this.fileChange = this.fileChange.bind(this);
 		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
-		// this.dragDrop = this.dragDrop.bind(this);
-		// this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
 	}
 
 
@@ -53,7 +46,8 @@ class Chat extends React.Component {
 			addMessages(Data.mes, chatId);
 		}  
 		if (chatId === 'Group Chat'){
-			fetch('http://localhost:8000/users/1/messages/?chat_id=21')
+			this.id = 1;
+			fetch(messageListUrl(21))
 				.then((response) => {
 					if(response.status !== 200) {
 						console.log('Invalid  query!');
@@ -70,7 +64,7 @@ class Chat extends React.Component {
 			
 			const centrifuge = new Centrifuge(CENTRIFUGE_URL);
 
-			fetch('http://localhost:8000/centrifugo/?user_id=1')
+			fetch(tokenUrl(this.id))
 				.then(response => {
 					response.json()
 						.then(data => {
@@ -200,7 +194,7 @@ class Chat extends React.Component {
 					<div
 						className={messageStyles.result}
 						id="result"
-						onDrop={preventDefaults} // onDrop={this.dragDrop}
+						onDrop={preventDefaults}
 						onDragLeave={preventDefaults}
 						onDragOver={preventDefaults}
 						onDragEnter={preventDefaults}
@@ -219,16 +213,13 @@ class Chat extends React.Component {
 						})}
 					</div>
 					<div className={messageStyles.inp}>
-						<LeftButtons /* change={this.changeText}  send={this.onSendClick} */ fileChange={this.fileChange}/>
+						<LeftButtons fileChange={this.fileChange}/>
 						<Input
 							className={messageStyles.forminput}
-							// value={this.currentText}
 							chatId={chatId}
 							connection={this.state.connection}
-							// textevent={this.changeText}
-							// onEnter={this.onSendClick}
 						/>
-						<RightButtons /* send={this.onSendClick} */ chatId={this.props.chatId} audio={this.onSendAudioandImage}/>
+						<RightButtons chatId={this.props.chatId} audio={this.onSendAudioandImage}/>
 					</div>
 				</form>
 			</React.Fragment>
@@ -254,118 +245,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);
-
-
-/* pollItems = () => {
-		fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21&new=yes`)
-			.then(resp => resp.json())
-			.then(data => this.getMessages(data));
-	} 
-
-	changeText(text) {
-		this.setState({value: text});
-	}
-
-	dragDrop(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		const dt = event.dataTransfer;
-		const files = dt.files;
-		this.fileChange(files);
-	}
-
-	fileChange(files) {
-		const message = [];
-		const images = [];
-		if(files) {
-			for(let i = 0; i < files.length; i+=1 ) {
-				const value = window.URL.createObjectURL(files[i]);
-				const time = Chat.setTime();
-				images.push(value);
-				message.push({text: value, date: time, type: 'img'});
-			}
-			
-			this.onSendAudioandImage(message);
-		}
-	} 
-
-	onSendAudioandImage(message) {
-		let { messages } = this.state;
-		if (message) {
-			messages = messages.concat(message);
-			this.setState({ messages }, Chat.scrollTop);
-			for (let i = 0; i < message.length; i+=1) {
-				this.attachments.push(message[i].text);
-				const data = new FormData();
-				if (message[i].type === 'audio') {
-					data.append('audio', message[i].text);
-					fetch('https://tt-front.now.sh/upload', {
-						method: 'POST',
-						body: data,
-					}).then((response) => {console.log(response);});
-				} else {
-					data.append('image', message[i].text);
-					fetch('https://tt-front.now.sh/upload', {
-						method: 'POST',
-						body: data,
-					}).then((response) => {console.log(response);});
-				}
-			}
-		}
-	}
-
-	componentWillUnmount(){
-		this.attachments.forEach((item) => {
-			window.URL.revokeObjectURL(item);
-		});
-		clearInterval(this.state.interval);
-	}
-
-	COMPONENT DID MOUNT PART!
-
-	this.setState({ name: Data.name, url: Data.url });
-		if (this.chatId !== 'group') {
-			if ('mes' in Data && Data.mes != null) {
-				Data.mes.forEach((item, index) => {
-					messages.push({ text: Data.mes[index].message, date: Data.mes[index].time, type: Data.mes[index].type });
-				});
-				this.setState({ messages }, Chat.scrollTop);
-			}
-		} else {
-			this.author = prompt('Перед входом в чат укажите имя', '');
-			fetch(`http://localhost:8000/users/auth/?name=${this.author}`)
-				.then(res => {
-					console.log(res.status);
-					if (res.status !== 403){
-						res.json()
-							.then(data => {
-								this.id = data; 
-								fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21`)
-									.then(response => {
-										console.log(response.status);
-										if (response.status === 200){
-											response.json().then(mData => {
-												this.getMessages(mData);
-												interval = setInterval(this.pollItems, 5000); this.setState({interval});
-											});
-										} else {
-											alert('You are not in this chat');
-											history.go(-2);
-										}
-									})
-									.catch(err => console.log(err));});
-					} else {
-						alert('Not Allowed');
-						history.goBack();
-					}
-				})
-				.catch(err => console.log(err));
-		}
-		if (this.chatId !== 'group') {
-			if (this.state.messages.length){
-				const data = JSON.parse(localStorage.getItem(`${this.chatId}`));
-				Data.flag = true;
-				localStorage.setItem(`${this.chatId}`, JSON.stringify(data));
-			}
-		}
-*/
