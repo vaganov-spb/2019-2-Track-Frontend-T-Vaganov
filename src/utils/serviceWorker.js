@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -21,7 +22,7 @@ const isLocalhost = Boolean(
 );
 
 export function register(config) {
-	if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+	if (/* process.env.NODE_ENV === 'production' && */ 'serviceWorker' in navigator) {
 		// The URL constructor is available in all browsers that support SW.
 		const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
 		if (publicUrl.origin !== window.location.origin) {
@@ -32,8 +33,7 @@ export function register(config) {
 		}
 
 		window.addEventListener('load', () => {
-			const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-
+			const swUrl = `${process.env.PUBLIC_URL}/customWorker.js`;
 			if (isLocalhost) {
 				// This is running on localhost. Let's check if a service worker still exists or not.
 				checkValidServiceWorker(swUrl, config);
@@ -45,6 +45,7 @@ export function register(config) {
 						'This web app is being served cache-first by a service ' +
               'worker. To learn more, visit http://bit.ly/CRA-PWA',
 					);
+					// navigator.serviceWorker.addEventListener('fetch', function(event){console.log('fetch');}, function(){console.log('-');});
 				});
 			} else {
 				// Is not localhost. Just register service worker

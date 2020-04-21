@@ -49,7 +49,7 @@ const storageArray = [
 	{
 		name: 'Anton Mitrikas',
 		flag: true,
-		url: 'http://www.cubic.net.ua/wp-content/uploads/2018/10/2720751.png',
+		url: 'https://cdn3.iconfinder.com/data/icons/education-1-28/49/145-512.png',
 		mes: [
 			{message: 'qwerr', time: '10:22', type: 'text'},
 			{message:'drcfrckfmfvkm', time:'22:43', type:'text'},

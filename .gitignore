@@ -121,6 +121,9 @@ typings/
 # files with non-usable utils
 src/pages/Chat_comp_useful.js
 
+# package.json backup
+backup.json
+
 # Yarn Integrity file
 .yarn-integrity
 
