@@ -26,4 +26,4 @@ deploy:
       - master
       - devel
       - project
-      - homew6
+      - homew
