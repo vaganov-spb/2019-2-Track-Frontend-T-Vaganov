@@ -13,13 +13,12 @@ export async function peerHandshake(centrifuge, id, peerId){
 				peerHandshakeMessage(centrifuge, {'type': 'request', 'my_id': id});
 			});
 			centrifuge.subscribe('secret:chat', (message) => {
-				console.log(message);
-				if(message.data.my_id != id){
+				if(message.data.my_id !== id){
 					if(message.data.type === 'request'){
 						peerHandshakeMessage(centrifuge, {'type': 'reply', 'my_id': id, 'hash': `${message.data.my_id * 2 + 1}`});
 					}
 					if(message.data.type === 'reply'){
-						if((parseInt(message.data.hash, 10) - 1) / 2 == id){
+						if((parseInt(message.data.hash, 10) - 1) / 2 === parseInt(id, 10)) {
 							peerHandshakeMessage(centrifuge, {'type': 'connection', 'my_id': id, 'peer': peerId});
 						} else {
 							peerHandshakeMessage(centrifuge, {'type': 'rejected'});
