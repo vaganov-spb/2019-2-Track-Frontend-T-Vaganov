@@ -1,5 +1,7 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react';
 import { connect } from 'react-redux';
+import Peer from 'peerjs';
 import moment from 'moment-timezone';
 import messageStyles from '../styles/MessageForm.module.css';
 import { getMessagesSuccess, clearMessageInputValue } from '../actions/index';
@@ -8,12 +10,15 @@ import 'font-awesome/css/font-awesome.min.css';
 import  { LeftButtons } from '../components/chatform/LeftButtons';
 import RightButtons from '../components/chatform/RightButtons';
 import Input from '../components/chatform/Input';
-import { setTime, scrollTop, preventDefaults } from '../utils';
+import { setTime, scrollTop, preventDefaults } from '../utils/index';
+import { peerHandshake } from '../utils/PeerFuncs';
 import { Message } from '../components/chatform/Message';
 import { ImageMessage } from '../components/chatform/ImageMessage';
 import { VoiceMessage } from '../components/chatform/VoiceMessage';
 import HeaderChat from '../components/chatform/HeaderChat';
+import { CENTRIFUGE_URL, messageListUrl, tokenUrl } from '../constants/urls';
 
+const Centrifuge = require('centrifuge');
 
 class Chat extends React.Component {
 
@@ -21,81 +26,108 @@ class Chat extends React.Component {
 		super(props);
 		this.state = {
 			value: '',
+			centrifuge: null,
+			connection: null,
+			peer: null,
+			peer_id: null,
 		};
-		// this.author = null;
-		// this.id = null;
-		// this.attachments= [];
-		// this.pollItems = this.pollItems.bind(this);
+		
+		this.id = null;
 		this.getMessages = this.getMessages.bind(this);
-		// this.changeText = this.changeText.bind(this);
 		this.onSendClick = this.onSendClick.bind(this);
-		// this.fileChange = this.fileChange.bind(this);
 		this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
-		// this.dragDrop = this.dragDrop.bind(this);
-		// this.onSendAudioandImage = this.onSendAudioandImage.bind(this);
 	}
+
 
 	componentDidMount() {
 		const {addMessages, fillInput, chatId} = this.props;
-		const Data = JSON.parse(localStorage.getItem(chatId));
-
-		addMessages(Data.mes, chatId);
-		fillInput(chatId);
-		/*
-		this.setState({ name: Data.name, url: Data.url });
-		if (this.chatId !== 'group') {
-			if ('mes' in Data && Data.mes != null) {
-				Data.mes.forEach((item, index) => {
-					messages.push({ text: Data.mes[index].message, date: Data.mes[index].time, type: Data.mes[index].type });
-				});
-				this.setState({ messages }, Chat.scrollTop);
-			}
-		} else {
-			this.author = prompt('Перед входом в чат укажите имя', '');
-			fetch(`http://localhost:8000/users/auth/?name=${this.author}`)
-				.then(res => {
-					console.log(res.status);
-					if (res.status !== 403){
-						res.json()
-							.then(data => {
-								this.id = data; 
-								fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21`)
-									.then(response => {
-										console.log(response.status);
-										if (response.status === 200){
-											response.json().then(mData => {
-												this.getMessages(mData);
-												interval = setInterval(this.pollItems, 5000); this.setState({interval});
-											});
-										} else {
-											alert('You are not in this chat');
-											history.go(-2);
-										}
-									})
-									.catch(err => console.log(err));});
-					} else {
-						alert('Not Allowed');
-						history.goBack();
+		if(chatId !== 'Group Chat'){
+			const Data = JSON.parse(localStorage.getItem(chatId));
+			addMessages(Data.mes, chatId);
+		}  
+		if (chatId === 'Group Chat'){
+			this.id = 1;
+			fetch(messageListUrl(21))
+				.then((response) => {
+					if(response.status !== 200) {
+						console.log('Invalid  query!');
 					}
+					response.json()
+						.then((data) => {
+							addMessages(data, chatId);
+							scrollTop();
+						});
 				})
-				.catch(err => console.log(err));
+				.catch((err) => {
+					console.log(err);
+				});
+			
+			const centrifuge = new Centrifuge(CENTRIFUGE_URL);
+
+			fetch(tokenUrl(this.id))
+				.then(response => {
+					response.json()
+						.then(data => {
+							centrifuge.setToken(data.token);
+							centrifuge.subscribe('chat:21', function(message){
+								addMessages([message.data.message,], chatId);
+								scrollTop();
+							});
+				
+							centrifuge.connect();
+							this.setState({centrifuge, });
+						});
+				});
 		}
-		if (this.chatId !== 'group') {
-			if (this.state.messages.length){
-				const data = JSON.parse(localStorage.getItem(`${this.chatId}`));
-				Data.flag = true;
-				localStorage.setItem(`${this.chatId}`, JSON.stringify(data));
-			}
-		} */
-		
+
+
+		if(chatId === 'PEER JS'){
+			const id = prompt('Enter Your ID');
+			this.id = id;
+			const centrifuge = new Centrifuge(CENTRIFUGE_URL);
+			const peer =  new Peer();
+			this.setState({peer, });
+			peer.on('connection', (con) => {
+				con.on('open', () => {
+					con.on('data', (message) => {
+						addMessages([message,], chatId);
+						scrollTop();
+					});
+				});
+				this.setState({connection: con});
+			});
+
+			peer.on('open', (Id) => {
+				this.setState({peer_id: Id});
+				peerHandshake(centrifuge, id, Id)
+					.then((conn) => {
+						if (conn < Id) {
+							const connection = peer.connect(conn);
+							connection.on('open', () => {
+								connection.on('data', (message) => {
+									addMessages([message,], chatId);
+									scrollTop();
+									
+								});
+							});
+							this.setState({connection,});
+						}
+					});
+			});
+			this.setState({centrifuge, });
+		}
+		fillInput(chatId);
 	}
 
-	/* componentWillUnmount(){
-		this.attachments.forEach((item) => {
-			window.URL.revokeObjectURL(item);
-		});
-		clearInterval(this.state.interval);
-	} */
+	componentWillUnmount(){
+		if(this.props.chatId === 'Group Chat' || this.props.chatId === 'PEER JS'){
+			if(this.props.chatId === 'PEER JS'){
+				this.state.peer.destroy();
+			}
+			this.state.centrifuge.disconnect();
+		};
+	}
+
 
 	onSendClick() {
 		const { messages, value } = this.state;
@@ -122,30 +154,6 @@ class Chat extends React.Component {
 		}
 	}
 
-	/* onSendAudioandImage(message) {
-		let { messages } = this.state;
-		if (message) {
-			messages = messages.concat(message);
-			this.setState({ messages }, Chat.scrollTop);
-			for (let i = 0; i < message.length; i+=1) {
-				this.attachments.push(message[i].text);
-				const data = new FormData();
-				if (message[i].type === 'audio') {
-					data.append('audio', message[i].text);
-					fetch('https://tt-front.now.sh/upload', {
-						method: 'POST',
-						body: data,
-					}).then((response) => {console.log(response);});
-				} else {
-					data.append('image', message[i].text);
-					fetch('https://tt-front.now.sh/upload', {
-						method: 'POST',
-						body: data,
-					}).then((response) => {console.log(response);});
-				}
-			}
-		}
-	} */
 
 	getMessages(data){
 		let time = null;
@@ -163,16 +171,7 @@ class Chat extends React.Component {
 		}
 	}
 
-	/* pollItems = () => {
-		fetch(`http://localhost:8000/users/${this.id}/messages/?chatId=21&new=yes`)
-			.then(resp => resp.json())
-			.then(data => this.getMessages(data));
-	} 
-
-	changeText(text) {
-		this.setState({value: text});
-	} */
-
+	
 	saveToLocalStorage(message, time) {
 		const obj = JSON.parse(localStorage.getItem(`${this.chatId}`));
 		obj.flag = false;
@@ -180,49 +179,29 @@ class Chat extends React.Component {
 		localStorage.setItem(`${this.chatId}`, JSON.stringify(obj));
 	}
 
-	/* dragDrop(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		const dt = event.dataTransfer;
-		const files = dt.files;
-		this.fileChange(files);
-	}
 
-	fileChange(files) {
-		const message = [];
-		const images = [];
-		if(files) {
-			for(let i = 0; i < files.length; i+=1 ) {
-				const value = window.URL.createObjectURL(files[i]);
-				const time = Chat.setTime();
-				images.push(value);
-				message.push({text: value, date: time, type: 'img'});
-			}
-			
-			this.onSendAudioandImage(message);
-		}
-	} */
 
 	render() {
 		if (!this.props.messages) {
 			return null;
 		}
 
+		const chatId = this.props.chatId;
 		return (
 			<React.Fragment>
-				<HeaderChat chatId={this.props.chatId}/>
+				<HeaderChat chatId={chatId}/>
 				<form>
 					<div
 						className={messageStyles.result}
 						id="result"
-						onDrop={preventDefaults} // onDrop={this.dragDrop}
+						onDrop={preventDefaults}
 						onDragLeave={preventDefaults}
 						onDragOver={preventDefaults}
 						onDragEnter={preventDefaults}
 					>
 						{this.props.messages.map((message, index) => {
 							if (message.type === 'text') {
-								return <Message key={index} text={message.message} Date={message.time}/>;
+								return <Message key={index} text={message.message} Date={(chatId !== 'Group Chat') ? message.time : moment(message.time).tz('Europe/Moscow').format('HH:mm')}/>;
 							} 
 							if (message.type === 'img') {
 								return <ImageMessage key={index} img={message.message} Date={message.time}/>;
@@ -234,15 +213,13 @@ class Chat extends React.Component {
 						})}
 					</div>
 					<div className={messageStyles.inp}>
-						<LeftButtons /* change={this.changeText}  send={this.onSendClick} */ fileChange={this.fileChange}/>
+						<LeftButtons fileChange={this.fileChange}/>
 						<Input
 							className={messageStyles.forminput}
-							// value={this.currentText}
-							chatId={this.props.chatId}
-							// textevent={this.changeText}
-							// onEnter={this.onSendClick}
+							chatId={chatId}
+							connection={this.state.connection}
 						/>
-						<RightButtons /* send={this.onSendClick} */ chatId={this.props.chatId} audio={this.onSendAudioandImage}/>
+						<RightButtons chatId={this.props.chatId} audio={this.onSendAudioandImage}/>
 					</div>
 				</form>
 			</React.Fragment>

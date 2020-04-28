@@ -11,10 +11,29 @@ function Input (props){
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			if(props.canSend) {
-				props.addMessages(
-					[{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}],
-					props.chatId
-				);
+				if(props.chatId !== 'Group Chat' && props.chatId !== 'PEER JS'){
+					props.addMessages(
+						[{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}],
+						props.chatId
+					);
+				} 
+
+				if(props.chatId === 'Group Chat') {
+					fetch('http://localhost:8000/chats/1/newmessage/',{
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({content: `${props.currentText}`, chatId:21})
+					});
+				}
+
+				if(props.chatId === 'PEER JS') {
+					props.addMessages(
+						[{message: `${props.currentText}`, type: 'text', time: `${setTime()}`}],
+						props.chatId
+					);
+					props.connection.send({message: `${props.currentText}`, type: 'text', time: `${setTime()}`});
+				}
+
 				props.clearInput(props.chatId);
 			}
 		}

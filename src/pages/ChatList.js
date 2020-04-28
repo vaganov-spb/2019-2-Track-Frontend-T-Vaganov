@@ -23,9 +23,10 @@ class ChatList extends React.Component {
 		const chatsObj = {};
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
-			if (key !== 'profile' && key !== 'group'){
+			if (key !== 'profile'){
 				const chat = JSON.parse(localStorage.getItem(key));
-				Object.assign(chatsObj,{[key]: {name: chat.name, flag: chat.flag, url: chat.url, lastMes: chat.mes[chat.mes.length - 1], }});
+				const message = chat.mes.length ? chat.mes[chat.mes.length - 1] : '';
+				Object.assign(chatsObj,{[key]: {name: chat.name, flag: chat.flag, url: chat.url, lastMes: message, }});
 			}
 		}
 		this.props.loadChats(chatsObj);
