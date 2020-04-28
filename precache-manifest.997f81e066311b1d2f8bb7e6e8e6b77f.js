@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "5a3be097c6145b63ea16cda08200e536",
+    "revision": "e97b3fc3ad0ce60fcb1d9421b740fbb2",
     "url": "/2019-2-Track-Frontend-T-Vaganov/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/2019-2-Track-Frontend-T-Vaganov/static/css/2.911d384e.chunk.css"
   },
   {
-    "revision": "e060088cef61822f747a",
+    "revision": "4581014279ea7f420147",
     "url": "/2019-2-Track-Frontend-T-Vaganov/static/css/main.a204c7a8.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/2019-2-Track-Frontend-T-Vaganov/static/js/2.d35232bc.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e060088cef61822f747a",
-    "url": "/2019-2-Track-Frontend-T-Vaganov/static/js/main.e50485ce.chunk.js"
+    "revision": "4581014279ea7f420147",
+    "url": "/2019-2-Track-Frontend-T-Vaganov/static/js/main.8bee3c3e.chunk.js"
   },
   {
     "revision": "66c79dd0e878082a43da",
